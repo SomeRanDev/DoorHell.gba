@@ -1,0 +1,9 @@
+{
+	"configurations": [
+		{
+			"name": "SomeRanDev's Windows",
+			"includePath": ["Z:/GBADev/butano-gba/butano/include"],
+			"cppStandard": "c++17"
+		}
+	]
+}

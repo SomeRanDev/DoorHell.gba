@@ -1,0 +1,4 @@
+dh_hand.bmp
+	SomeRanDev (Robert Borghese)
+	CC0 1.0 Universal (CC0 1.0)
+	somerandev.contact@gmail.com
