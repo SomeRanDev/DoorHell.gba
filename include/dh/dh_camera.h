@@ -18,13 +18,13 @@ public:
 	[[nodiscard]] bool shift(int _x, int _y);
 
 	static constexpr int world_width = 11;
-	static constexpr int world_height = 4;
+	static constexpr int world_height = 13;
 
 private:
 	bn::regular_bg_ptr _bg;
 
 	int x = 3;
-	int y = 3;
+	int y = 13;
 
 	int intro_time = 0;
 	int intro_frame = 0;

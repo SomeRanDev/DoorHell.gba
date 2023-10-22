@@ -77,23 +77,38 @@ void game::update_intro() {
 		state = Playing;
 	}
 	if(cam.should_update_hand_intro()) {
-		hand_obj.update_intro();
+		//hand_obj.update_intro();
 	}
 }
 
 void game::update_game() {
-	if(!hand_obj.is_actively_pressing()) {
-		hand_obj.update_movement();
-		if(bn::keypad::a_pressed()) {
-			hand_obj.press();
-		}
+	// if(!hand_obj.is_actively_pressing()) {
+	// 	hand_obj.update_movement();
+	// 	if(bn::keypad::a_pressed()) {
+	// 		hand_obj.press();
+	// 	}
+	// }
+
+	// hand_obj.update();
+
+	int x = 0;
+	int y = 0;
+	
+	if(bn::keypad::left_held()) {
+		x = -1;
+	} else if(bn::keypad::right_held()) {
+		x = 1;
 	}
 
-	hand_obj.update();
+	if(bn::keypad::up_held()) {
+		y = -1;
+	} else if(bn::keypad::down_held()) {
+		y = 1;
+	}
 
 	if(camera_move_cooldown > 0) {
 		camera_move_cooldown--;
-	} else if(cam.shift(hand_obj.move_camera_x, hand_obj.move_camera_y)) {
+	} else if(cam.shift(x, y)) {
 		camera_move_cooldown = 2;
 	}
 

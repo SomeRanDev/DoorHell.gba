@@ -46,12 +46,38 @@ bool camera::set_position(int _x, int _y) {
 }
 
 void camera::refresh_position() {
-	int index = ((world_height - y - 1) * world_width) + x;
-	BN_LOG(x, ", ", y, ", ", index);
+	int y_off = y % 4;
+	int y_sec = y / 4;
+	int index;
+	if(y_off == 0) {
+		index = ((4 - y_sec - 1) * (world_width + 3)) + x;
+	} else {
+		index = ((4 - y_sec - 1) * (world_width + 3)) - y_off;
+	}
 	_bg.set_item(*frames[game_frame_start + index]);
 }
 
 bool camera::shift(int _x, int _y) {
+	constexpr int world_width_2 = (world_width / 2);
+
+	if(_x != 0) {
+		auto y_off = y % 4;
+		if(y_off != 0) {
+			_y = y_off <= 1 ? -1 : 1;
+			_x = 0;
+		}
+	}
+
+	if(_y != 0) {
+		if(x > world_width_2) {
+			_x = -1;
+			_y = 0;
+		} else if(x < world_width_2) {
+			_x = 1;
+			_y = 0;
+		}
+	}
+	
 	return set_position(x + _x, y + _y);
 }
 
