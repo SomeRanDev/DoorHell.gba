@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_sprite_ptr.h"
+#include "bn_fixed.h"
 
 #include "dh_defines.h"
 
@@ -10,8 +11,8 @@ class hand {
 public:
 	hand();
 
-	void add_x(int x);
-	void add_y(int y);
+	void add_x(bn::fixed x);
+	void add_y(bn::fixed y);
 
 	void update();
 	void update_normal();

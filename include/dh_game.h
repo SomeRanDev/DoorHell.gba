@@ -11,6 +11,11 @@
 
 DH_START_NAMESPACE
 
+enum State {
+	Intro,
+	Playing
+};
+
 class game : public mj::game {
 public:
 	game(int completed_games, const mj::game_data& data);
@@ -46,13 +51,31 @@ private:
 
 	void update();
 
-	hand hand_obj;
+	void update_intro();
+	void update_game();
 
+	// -------------------------------------------
+	// STATE
+	State state = Intro;
+
+	// -------------------------------------------
+	// MICRO GAME
+	mj::game_result* current_result = nullptr;
+	const mj::game_data* current_data = nullptr;
+
+	// -------------------------------------------
+	// INTRO & BACKGROUND
 	bn::regular_bg_ptr _bg;
 
-	mj::game_result* current_result;
-	const mj::game_data* current_data;
+	int intro_time = 0;
+	int intro_frame = 0;
 
+	// -------------------------------------------
+	// GAME
+	hand hand_obj;
+
+	// -------------------------------------------
+	// MICRO GAME
 	int _total_frames;
 	int _show_result_frames = 60;
 

@@ -2,19 +2,21 @@
 
 #include "bn_keypad.h"
 
-#include "bn_regular_bg_items_tmg_press_a.h"
-#include "bn_regular_bg_items_tmg_you_lose.h"
-#include "bn_regular_bg_items_tmg_you_win.h"
+#include "dh_intro.h"
+
+#include "bn_log.h"
 
 DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
-	_bg(bn::regular_bg_items::tmg_press_a.create_bg((256 - 240) / 2, (256 - 160) / 2)),
-	_total_frames(play_jingle(mj::game_jingle_type::METRONOME_16BEAT, completed_games, data))
+	_bg(intro_frames[0]->create_bg((256 - 240) / 2, (256 - 160) / 2)),
+	_total_frames(maximum_frames)
 {
+	(void)play_jingle(mj::game_jingle_type::METRONOME_16BEAT, completed_games, data);
 }
 
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
+	update_intro();
 }
 
 void game::fade_out([[maybe_unused]] const mj::game_data& data) {
@@ -64,6 +66,27 @@ void game::set_defeat() {
 }
 
 void game::update() {
+	if(state == Intro) {
+		update_intro();
+	} else {
+		update_game();
+	}
+}
+
+void game::update_intro() {
+	if(intro_time++ > 4) {
+		intro_time = 0;
+		intro_frame++;
+		if(intro_frame >= intro_frame_count) {
+			state = Playing;
+		} else {
+			_bg.set_item(*intro_frames[intro_frame]);
+			//_bg.set_tiles(intro_frames[24]->tiles_item());
+		}
+	}
+}
+
+void game::update_game() {
 	if(!hand_obj.is_actively_pressing()) {
 		hand_obj.update_movement();
 		if(bn::keypad::a_pressed()) {
