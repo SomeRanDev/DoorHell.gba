@@ -8,15 +8,17 @@
 
 DH_START_NAMESPACE
 
-constexpr int screen_min_x = (240 / -2);
-constexpr int screen_max_x = (240 / 2);
-constexpr int screen_min_y = (160 / -2);
-constexpr int screen_max_y = (160 / 2);
+namespace {
+	constexpr int screen_min_x = (240 / -2);
+	constexpr int screen_max_x = (240 / 2);
+	constexpr int screen_min_y = (160 / -2);
+	constexpr int screen_max_y = (160 / 2);
 
-bn::fixed clamp(bn::fixed value, int min, int max) {
-	if(value < min) return min;
-	else if(value > max) return max;
-	return value;
+	bn::fixed clamp(bn::fixed value, int min, int max) {
+		if(value < min) return min;
+		else if(value > max) return max;
+		return value;
+	}
 }
 
 hand::hand():

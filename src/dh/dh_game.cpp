@@ -11,10 +11,14 @@ DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	_total_frames(maximum_frames)
+	_total_frames(
+		play_jingle(
+			completed_games >= 12 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
+			completed_games,
+			data
+		)
+	)
 {
-	(void)play_jingle(mj::game_jingle_type::TOTSNUK12B, completed_games, data);
-
 	hand_obj.start_intro();
 
 	// Show tutorial text
