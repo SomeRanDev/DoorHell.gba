@@ -17,6 +17,7 @@ const items = [];
 let i = 1;
 while(existsSync(bmp_path(i))) {
 	includes.push(`#include "bn_regular_bg_items_dh_frame_${i}.h"`);
+	includes.push(`#include "bn_regular_bg_items_dh_background_frame_${i}.h"`);
 	items.push(`ITEM(${i})`);
 	i++;
 }
@@ -39,9 +40,20 @@ DH_START_NAMESPACE
 
 using bg_tiles_item_const_ptr = bn::regular_bg_item const*;
 
-//constexpr bn::regular_bg_item const* first_bg = &bn::regular_bg_items::dh_frame_1;
-
 constexpr bg_tiles_item_const_ptr frames[] = {
+	${items.join(", ")}
+};
+
+#undef ITEM
+
+// ---------------------------------------------------------------
+// BACKGROUND FRAMES
+
+#define ITEM(INDEX) &bn::regular_bg_items::dh_background_frame_ ## INDEX
+
+using bg_tiles_item_const_ptr = bn::regular_bg_item const*;
+
+constexpr bg_tiles_item_const_ptr background_frames[] = {
 	${items.join(", ")}
 };
 

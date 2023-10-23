@@ -11,6 +11,8 @@ class camera {
 public:
 	camera();
 
+	void set_doorbell_position(int pos);
+
 	void set_frame_index(int index);
 
 	[[nodiscard]] bool update_intro();
@@ -30,8 +32,13 @@ public:
 	static constexpr int world_height = 13;
 
 private:
-	bn::regular_bg_ptr _bg;
-	bn::regular_bg_ptr _overlay_bg;
+	bn::regular_bg_ptr background_bg;
+	bn::regular_bg_ptr foreground_bg;
+	bn::optional<bn::regular_bg_ptr> _overlay_bg;
+
+	const bn::regular_bg_item* const* doorbell_frames;
+	int doorbell_first_index = 0;
+	int doorbell_position = 0;
 
 	int current_overlay_bg_index = -1;
 

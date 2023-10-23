@@ -2,39 +2,65 @@
 
 #include "dh/dh_intro.h"
 #include "dh/dh_high_bell.h"
+#include "dh/dh_right_bell.h"
 #include "dh/dh_close_bell.h"
 
 #include "dh/animations/dh_close_bell_press.h"
+#include "dh/animations/dh_right_bell_press.h"
+#include "dh/animations/dh_high_bell_press.h"
 
 DH_START_NAMESPACE
-
-#define overlay_frames dh_close_bell_frames
-#define overlay_first dh_close_bell_first_index
 
 constexpr int bg_x = (256 - 240) / 2;
 constexpr int bg_y = (256 - 160) / 2;
 
 camera::camera():
-	_bg(frames[0]->create_bg(bg_x, bg_y)),
-	_overlay_bg(overlay_frames[overlay_first]->create_bg(bg_x, bg_y))
+	background_bg(background_frames[0]->create_bg(bg_x, bg_y)),
+	foreground_bg(frames[0]->create_bg(bg_x, bg_y))
 {
-	_overlay_bg.set_visible(false);
+}
+
+void camera::set_doorbell_position(int pos) {
+	doorbell_position = pos;
+
+	switch(pos) {
+		case 0: {
+			doorbell_frames = dh_high_bell_frames;
+			doorbell_first_index = dh_high_bell_first_index;
+			break;
+		}
+		case 1: {
+			doorbell_frames = dh_right_bell_frames;
+			doorbell_first_index = dh_right_bell_first_index;
+			break;
+		}
+		case 2: {
+			doorbell_frames = dh_close_bell_frames;
+			doorbell_first_index = dh_close_bell_first_index;
+			break;
+		}
+		default: {}
+	}
+
+	_overlay_bg = doorbell_frames[doorbell_first_index]->create_bg(bg_x, bg_y);
+	_overlay_bg->set_visible(false);
 }
 
 void camera::set_frame_index(int index) {
-		if(animation == nullptr || animation_frame == -1) {
-			if(overlay_frames[index] == nullptr) {
-				_overlay_bg.set_visible(false);
+		if(_overlay_bg && (animation == nullptr || animation_frame == -1)) {
+			if(doorbell_frames[index] == nullptr) {
+				_overlay_bg->set_visible(false);
 			} else {
 				if(current_overlay_bg_index != index) {
 					current_overlay_bg_index = index;
-					_overlay_bg.set_item(*overlay_frames[index]);
+					_overlay_bg->set_item(*doorbell_frames[index]);
 				}
-				_overlay_bg.set_visible(true);
+				_overlay_bg->set_visible(true);
 			}
 		}
 
-		_bg.set_item(*frames[index]);
+		foreground_bg.set_item(*frames[index]);
+		background_bg.set_item(*background_frames[index]);
 		//_bg.set_tiles(frames[24]->tiles_item());
 		//_bg.set_tiles(*frames[intro_frame]);
 }
@@ -113,9 +139,33 @@ bool camera::shift(int _x, int _y) {
 }
 
 bool camera::on_a_press() {
-	if(_overlay_bg.visible()) {
-		animation = animations::dh_close_bell_press_frames;
-		animation_data = animations::dh_close_bell_press_data;
+	if(_overlay_bg && _overlay_bg->visible()) {
+		switch(doorbell_position) {
+			case 0: {
+				animation = animations::dh_high_bell_press_frames;
+				animation_data = animations::dh_high_bell_press_data;
+				break;
+			}
+			case 1: {
+				animation = animations::dh_right_bell_press_frames;
+				animation_data = animations::dh_right_bell_press_data;
+				break;
+			}
+			case 2: {
+				animation = animations::dh_close_bell_press_frames;
+				animation_data = animations::dh_close_bell_press_data;
+				break;
+			}
+			default: {}
+		}
+
+		// Can only press when on the corrent "Y" position
+		if(animation_data[2] != (world_height - y - 1)) {
+			animation = nullptr;
+			animation_data = nullptr;
+			return false;
+		}
+
 		animation_frame = -1;
 		animation_time = 3;
 		return true;
@@ -131,13 +181,14 @@ bool camera::update_animation() {
 	if(--animation_time == 0) {
 		animation_time = 3;
 
+		// Align "X" before playing animation
 		if(x != animation_data[1]) {
 			(void)shift(animation_data[1] > x ? 1 : -1, 0);
 		} else {
 			animation_frame++;
-			if(!animation_done()) {
-				_overlay_bg.set_item(*animation[animation_frame]);
-				_overlay_bg.set_visible(true);
+			if(!animation_done() && _overlay_bg) {
+				_overlay_bg->set_item(*animation[animation_frame]);
+				_overlay_bg->set_visible(true);
 			}
 		}
 	}

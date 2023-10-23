@@ -12,6 +12,10 @@ function json_path(i: number): string {
 	return `./graphics/dh/frames/dh_frame_${i}.json`;
 }
 
+function background_json_path(i: number): string {
+	return `./graphics/dh/background_frames/dh_background_frame_${i}.json`;
+}
+
 function bmp_path(i: number): string {
 	return `./graphics/dh/frames/dh_frame_${i}.bmp`;
 }
@@ -19,7 +23,10 @@ function bmp_path(i: number): string {
 let i = 2;
 const data: Uint8Array = await Deno.readFile(json_path(1));
 
+Deno.writeFileSync(background_json_path(1), data);
+
 while(existsSync(bmp_path(i))) {
 	Deno.writeFileSync(json_path(i), data);
+	Deno.writeFileSync(background_json_path(i), data);
 	i++;
 }

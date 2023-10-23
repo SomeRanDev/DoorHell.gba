@@ -23,7 +23,9 @@ DH_START_ANIMATIONS_NAMESPACE
 
 #define ITEM(INDEX) &bn::regular_bg_items::dh_high_bell_press_ ## INDEX
 
-constexpr int dh_high_bell_press_size = 11;
+constexpr int dh_high_bell_press_data[] = {
+	11, 10, 12
+};
 constexpr bn::regular_bg_item const* dh_high_bell_press_frames[] = {
 	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10), ITEM(11)
 };

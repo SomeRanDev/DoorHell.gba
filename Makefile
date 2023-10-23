@@ -35,9 +35,13 @@ INCLUDES    :=  include include/mj
 DATA        :=
 GRAPHICS    :=  graphics/dh\
 				graphics/dh/frames\
+				graphics/dh/background_frames\
 				graphics/dh/high_bell\
+				graphics/dh/right_bell\
 				graphics/dh/close_bell\
 				graphics/dh/dh_close_bell_press\
+				graphics/dh/dh_right_bell_press\
+				graphics/dh/dh_high_bell_press\
 				graphics/mj
 AUDIO       :=  audio audio/mj
 DMGAUDIO    :=  dmg_audio dmg_audio/mj

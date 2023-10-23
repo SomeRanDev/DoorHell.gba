@@ -42,6 +42,7 @@ public:
 	mj::game_result play(const mj::game_data& data) final;
 
 private:
+	void init(const mj::game_data& data);
 
 	void set_current_references(mj::game_result& result, const mj::game_data& data);
 	void reset_current_references();
@@ -80,6 +81,8 @@ private:
 
 	bool _victory = false;
 	bool _defeat = false;
+
+	bool _initialized = false;
 };
 
 DH_END_NAMESPACE

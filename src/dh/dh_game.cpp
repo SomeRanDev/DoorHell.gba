@@ -14,6 +14,10 @@ game::game(int completed_games, const mj::game_data& data):
 	hand_obj.start_intro();
 }
 
+void game::init(const mj::game_data& data) {
+	cam.set_doorbell_position(data.random.get_int(3));
+}
+
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
 	update_intro();
 }
@@ -22,6 +26,11 @@ void game::fade_out([[maybe_unused]] const mj::game_data& data) {
 }
 
 mj::game_result game::play(const mj::game_data& data) {
+	if(!_initialized) {
+		_initialized = true;
+		init(data);
+	}
+
 	mj::game_result result;
 	result.exit = data.pending_frames == 0;
 
@@ -141,7 +150,7 @@ void game::update_movement() {
 		camera_move_cooldown--;
 	} else if(cam.shift(x, y)) {
 		last_move_type = move_type;
-		camera_move_cooldown = 3;
+		camera_move_cooldown = 2;
 	}
 }
 
