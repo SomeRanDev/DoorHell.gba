@@ -91,6 +91,32 @@ void game::update_game() {
 
 	// hand_obj.update();
 
+	if(cam.update_animation()) {
+		update_movement();
+	} else if(!_victory && cam.animation_done()) {
+		// TODO play door bell
+		set_victory();
+	}
+
+	//hand_obj.set_tiles(bn::sprite_items::dh_hand.tiles_item(), 4);
+
+	// if(bn::keypad::a_pressed()) {
+	// 	_bg.set_item(bn::regular_bg_items::tmg_you_win);
+	// 	set_victory();
+	// }
+	// else if(!bn::keypad::start_pressed() && bn::keypad::any_pressed()) {
+	// 	_bg.set_item(bn::regular_bg_items::tmg_you_lose);
+	// 	set_defeat();
+	// }
+}
+
+void game::update_movement() {
+	if(bn::keypad::a_pressed()) {
+		if(cam.on_a_press()) {
+			return;
+		}
+	}
+
 	int x = 0;
 	int y = 0;
 	
@@ -106,22 +132,17 @@ void game::update_game() {
 		y = 1;
 	}
 
-	if(camera_move_cooldown > 0) {
+	cam.restrict_movement(x, y);
+
+	static int last_move_type = -1;
+	int move_type = (y * 3) + x;
+
+	if(last_move_type == move_type && camera_move_cooldown > 0) {
 		camera_move_cooldown--;
 	} else if(cam.shift(x, y)) {
+		last_move_type = move_type;
 		camera_move_cooldown = 3;
 	}
-
-	//hand_obj.set_tiles(bn::sprite_items::dh_hand.tiles_item(), 4);
-
-	// if(bn::keypad::a_pressed()) {
-	// 	_bg.set_item(bn::regular_bg_items::tmg_you_win);
-	// 	set_victory();
-	// }
-	// else if(!bn::keypad::start_pressed() && bn::keypad::any_pressed()) {
-	// 	_bg.set_item(bn::regular_bg_items::tmg_you_lose);
-	// 	set_defeat();
-	// }
 }
 
 DH_END_NAMESPACE

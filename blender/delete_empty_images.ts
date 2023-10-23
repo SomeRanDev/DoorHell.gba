@@ -1,7 +1,11 @@
 /**
-	Copies non-empty images and generates a header file for them.
+	Copies non-empty images from ./Output and generates a header file for them.
+	Used for "overlay" objects in scene (like the door bell).
 
-	Example:
+	One argument:
+	delete_empty_images.ts <name of overlay object>
+
+	Run using deno:
 	deno run --allow-read --allow-write delete_empty_images.ts dh_high_bell
 **/
 

@@ -53,6 +53,7 @@ private:
 
 	void update_intro();
 	void update_game();
+	void update_movement();
 
 	// -------------------------------------------
 	// STATE

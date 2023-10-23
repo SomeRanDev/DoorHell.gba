@@ -1,0 +1,1 @@
+deno run --allow-read --allow-write generate_animation.ts dh_right_bell_press 140 150 54

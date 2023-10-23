@@ -1,0 +1,33 @@
+#pragma once
+
+#include "dh/dh_defines.h"
+
+#include "bn_regular_bg_item.h"
+
+#include "bn_regular_bg_items_dh_high_bell_press_1.h"
+#include "bn_regular_bg_items_dh_high_bell_press_2.h"
+#include "bn_regular_bg_items_dh_high_bell_press_3.h"
+#include "bn_regular_bg_items_dh_high_bell_press_4.h"
+#include "bn_regular_bg_items_dh_high_bell_press_5.h"
+#include "bn_regular_bg_items_dh_high_bell_press_6.h"
+#include "bn_regular_bg_items_dh_high_bell_press_7.h"
+#include "bn_regular_bg_items_dh_high_bell_press_8.h"
+#include "bn_regular_bg_items_dh_high_bell_press_9.h"
+#include "bn_regular_bg_items_dh_high_bell_press_10.h"
+#include "bn_regular_bg_items_dh_high_bell_press_11.h"
+
+DH_START_ANIMATIONS_NAMESPACE
+
+// ---------------------------------------------------------------
+// FRAMES
+
+#define ITEM(INDEX) &bn::regular_bg_items::dh_high_bell_press_ ## INDEX
+
+constexpr int dh_high_bell_press_size = 11;
+constexpr bn::regular_bg_item const* dh_high_bell_press_frames[] = {
+	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10), ITEM(11)
+};
+
+#undef ITEM
+
+DH_END_NAMESPACE

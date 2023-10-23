@@ -33,7 +33,12 @@ PYTHON      :=  python
 SOURCES     :=  src src/dh src/mj
 INCLUDES    :=  include include/mj
 DATA        :=
-GRAPHICS    :=  graphics/dh graphics/dh/frames graphics/dh/high_bell graphics/dh/close_bell graphics/mj
+GRAPHICS    :=  graphics/dh\
+				graphics/dh/frames\
+				graphics/dh/high_bell\
+				graphics/dh/close_bell\
+				graphics/dh/dh_close_bell_press\
+				graphics/mj
 AUDIO       :=  audio audio/mj
 DMGAUDIO    :=  dmg_audio dmg_audio/mj
 ROMTITLE    :=  GBA MJAM 23
