@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_regular_bg_ptr.h"
+#include "bn_optional.h"
 
 #include "dh/dh_defines.h"
 
@@ -9,6 +10,8 @@ DH_START_NAMESPACE
 class camera {
 public:
 	camera();
+
+	void set_frame_index(int index);
 
 	[[nodiscard]] bool update_intro();
 	[[nodiscard]] bool should_update_hand_intro() const;
@@ -22,6 +25,7 @@ public:
 
 private:
 	bn::regular_bg_ptr _bg;
+	bn::regular_bg_ptr _overlay_bg;
 
 	int x = 3;
 	int y = 13;

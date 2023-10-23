@@ -1,12 +1,36 @@
 #include "dh/dh_camera.h"
 
 #include "dh/dh_intro.h"
+#include "dh/dh_high_bell.h"
+#include "dh/dh_close_bell.h"
 
 DH_START_NAMESPACE
 
+#define overlay_frames dh_close_bell_frames
+#define overlay_first dh_close_bell_first_index
+
+constexpr int bg_x = (256 - 240) / 2;
+constexpr int bg_y = (256 - 160) / 2;
+
 camera::camera():
-	_bg(frames[0]->create_bg((256 - 240) / 2, (256 - 160) / 2))
+	_bg(frames[0]->create_bg(bg_x, bg_y)),
+	_overlay_bg(overlay_frames[overlay_first]->create_bg(bg_x, bg_y))
 {
+	_overlay_bg.set_visible(false);
+}
+
+void camera::set_frame_index(int index) {
+		if(overlay_frames[index] == nullptr) {
+			_overlay_bg.set_visible(false);
+		} else {
+			_overlay_bg.set_visible(true);
+			BN_LOG(index);
+			_overlay_bg.set_item(*overlay_frames[index]);
+		}
+
+		_bg.set_item(*frames[index]);
+		//_bg.set_tiles(frames[24]->tiles_item());
+		//_bg.set_tiles(*frames[intro_frame]);
 }
 
 bool camera::update_intro() {
@@ -14,9 +38,7 @@ bool camera::update_intro() {
 		intro_time = 0;
 		intro_frame++;
 		if(intro_frame < intro_frame_count) {
-			_bg.set_item(*frames[intro_frame]);
-			//_bg.set_tiles(frames[24]->tiles_item());
-			//_bg.set_tiles(*frames[intro_frame]);
+			set_frame_index(intro_frame);
 		}
 	}
 	return intro_frame >= intro_frame_count;
@@ -54,7 +76,8 @@ void camera::refresh_position() {
 	} else {
 		index = ((4 - y_sec - 1) * (world_width + 3)) - y_off;
 	}
-	_bg.set_item(*frames[game_frame_start + index]);
+	set_frame_index(game_frame_start + index);
+	//_bg.set_item(*frames[game_frame_start + index]);
 }
 
 bool camera::shift(int _x, int _y) {

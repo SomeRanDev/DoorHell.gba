@@ -109,7 +109,7 @@ void game::update_game() {
 	if(camera_move_cooldown > 0) {
 		camera_move_cooldown--;
 	} else if(cam.shift(x, y)) {
-		camera_move_cooldown = 2;
+		camera_move_cooldown = 3;
 	}
 
 	//hand_obj.set_tiles(bn::sprite_items::dh_hand.tiles_item(), 4);
