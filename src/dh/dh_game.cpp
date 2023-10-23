@@ -13,7 +13,7 @@ game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
 	_total_frames(
 		play_jingle(
-			completed_games >= 12 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
+			completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
 			completed_games,
 			data
 		)
@@ -143,10 +143,11 @@ void game::update_game() {
 
 	// hand_obj.update();
 
-	if(cam.update_animation()) {
+	if(_sleep > 0) {
+		_sleep--;
+	} else if(cam.update_animation()) {
 		update_movement();
 	} else if(!_victory && cam.animation_done()) {
-		// TODO play door bell
 		bn::sound_items::dh_doorbell.play();
 		set_victory();
 	}
@@ -166,6 +167,10 @@ void game::update_game() {
 void game::update_movement() {
 	if(bn::keypad::a_pressed()) {
 		if(cam.on_a_press()) {
+			return;
+		} else {
+			bn::sound_items::dh_denied.play();
+			_sleep = 16;
 			return;
 		}
 	}

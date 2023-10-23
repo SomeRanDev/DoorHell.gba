@@ -85,6 +85,8 @@ private:
 
 	// -------------------------------------------
 	// MICRO GAME
+	int _sleep = 0;
+
 	int _total_frames;
 	int _show_result_frames = 60;
 
