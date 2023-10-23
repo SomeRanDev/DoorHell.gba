@@ -5,13 +5,15 @@
 
 #include "dh/dh_intro.h"
 
+#include "bn_sound_items.h"
+
 DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
 	_total_frames(maximum_frames)
 {
-	(void)play_jingle(mj::game_jingle_type::METRONOME_16BEAT, completed_games, data);
+	(void)play_jingle(mj::game_jingle_type::TOTSNUK12B, completed_games, data);
 
 	hand_obj.start_intro();
 
@@ -141,6 +143,7 @@ void game::update_game() {
 		update_movement();
 	} else if(!_victory && cam.animation_done()) {
 		// TODO play door bell
+		bn::sound_items::dh_doorbell.play();
 		set_victory();
 	}
 

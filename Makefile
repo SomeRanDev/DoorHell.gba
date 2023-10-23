@@ -33,7 +33,8 @@ PYTHON      :=  python
 SOURCES     :=  src src/dh src/mj
 INCLUDES    :=  include include/mj
 DATA        :=
-GRAPHICS    :=  graphics/dh\
+GRAPHICS    :=  graphics/mj\
+				graphics/dh\
 				graphics/dh/frames\
 				graphics/dh/background_frames\
 				graphics/dh/high_bell\
@@ -41,9 +42,8 @@ GRAPHICS    :=  graphics/dh\
 				graphics/dh/close_bell\
 				graphics/dh/dh_close_bell_press\
 				graphics/dh/dh_right_bell_press\
-				graphics/dh/dh_high_bell_press\
-				graphics/mj
-AUDIO       :=  audio audio/mj
+				graphics/dh/dh_high_bell_press
+AUDIO       :=  audio audio/mj audio/dh
 DMGAUDIO    :=  dmg_audio dmg_audio/mj
 ROMTITLE    :=  GBA MJAM 23
 ROMCODE     :=  2MJ3
