@@ -1,17 +1,31 @@
 #include "dh/dh_game.h"
 
 #include "bn_keypad.h"
+#include "bn_math.h"
 
 #include "dh/dh_intro.h"
 
 DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
+	text_ratio(-0.5), // set to negative number to delay appearance
 	_total_frames(maximum_frames)
 {
 	(void)play_jingle(mj::game_jingle_type::METRONOME_16BEAT, completed_games, data);
 
 	hand_obj.start_intro();
+
+	// Show tutorial text
+	auto msg = "Ring the doorbell.";
+	auto x = 260;
+    data.small_text_generator.generate(x, 5, msg, text_sprites);
+
+	// Record text offsets
+	auto mid = data.small_text_generator.width(msg) / -2;
+	auto len = text_sprites.size();
+	for(decltype(len) i = 0; i < len; i++) {
+		text_offsets.push_back(text_sprites[i].x() - x + mid);
+	}
 }
 
 void game::init(const mj::game_data& data) {
@@ -20,6 +34,7 @@ void game::init(const mj::game_data& data) {
 
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
 	update_intro();
+	update_text();
 }
 
 void game::fade_out([[maybe_unused]] const mj::game_data& data) {
@@ -79,6 +94,8 @@ void game::update() {
 	} else {
 		update_game();
 	}
+
+	update_text();
 }
 
 void game::update_intro() {
@@ -87,6 +104,26 @@ void game::update_intro() {
 	}
 	if(cam.should_update_hand_intro()) {
 		//hand_obj.update_intro();
+	}
+}
+
+void game::update_text() {
+	if(text_ratio < 1.0) {
+		bool is_middle = text_ratio > 0.42 && text_ratio < 0.58;
+		text_ratio += is_middle ? 0.003 : 0.05;
+
+		auto len = text_sprites.size();
+		for(decltype(len) i = 0; i < len; i++) {
+			if(is_middle) {
+				text_sprites[i].set_x(text_sprites[i].x() + 1);
+			} else {
+				text_sprites[i].set_x(text_offsets[i] + (260.0 * text_ratio) - (240.0 / 2.0));
+			}
+		}
+
+		if(text_ratio >= 1.0) {
+			text_sprites.clear();
+		}
 	}
 }
 
@@ -133,9 +170,7 @@ void game::update_movement() {
 		x = -1;
 	} else if(bn::keypad::right_held()) {
 		x = 1;
-	}
-
-	if(bn::keypad::up_held()) {
+	} else if(bn::keypad::up_held()) {
 		y = -1;
 	} else if(bn::keypad::down_held()) {
 		y = 1;

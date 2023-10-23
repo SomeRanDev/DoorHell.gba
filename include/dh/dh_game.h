@@ -2,6 +2,8 @@
 
 #include "bn_optional.h"
 #include "bn_sprite_ptr.h"
+#include "bn_fixed.h"
+#include "bn_vector.h"
 
 #include "mj/mj_game.h"
 
@@ -53,8 +55,15 @@ private:
 	void update();
 
 	void update_intro();
+	void update_text();
 	void update_game();
 	void update_movement();
+
+	// -------------------------------------------
+	// TEXT SPRITES
+	bn::vector<bn::sprite_ptr, 5> text_sprites;
+	bn::vector<bn::fixed, 5> text_offsets;
+	bn::fixed text_ratio;
 
 	// -------------------------------------------
 	// STATE
