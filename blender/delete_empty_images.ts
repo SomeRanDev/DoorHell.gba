@@ -87,7 +87,8 @@ for(let i = 0; i < keptFiles.length; i++) {
 	Deno.copyFileSync(getFrame(data[1]), `./${folderName}/${imageName}.png`);
 	Deno.writeTextFileSync(`./${folderName}/out/${imageName}.json`, `{
 	"type": "regular_bg",
-	"bpp_mode": "bpp_4"
+	"bpp_mode": "bpp_4",
+	"compression": "auto"
 }`);
 	includes.push(`#include "bn_regular_bg_items_${imageName}.h"`);
 	if(firstIndex == -1) {

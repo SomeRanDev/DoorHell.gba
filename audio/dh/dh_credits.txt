@@ -1,3 +1,8 @@
+dh_denied.wav
+dh_fall.wav
+	SomeRanDev (Robert Borghese)
+	CC0 1.0 Universal (CC0 1.0)
+	somerandev.contact@gmail.com
 dh_doorbell.wav
 	Amada44
 	CC0, via Wikimedia Commons

@@ -1,18 +1,26 @@
 #include "dh/dh_camera.h"
 
+#include "bn_sound_items.h"
+
 #include "dh/dh_intro.h"
 #include "dh/dh_high_bell.h"
 #include "dh/dh_right_bell.h"
+#include "dh/dh_pumpkin_bell.h"
 #include "dh/dh_close_bell.h"
+#include "dh/dh_close_left_bell.h"
 
 #include "dh/animations/dh_close_bell_press.h"
+#include "dh/animations/dh_close_left_bell_press.h"
 #include "dh/animations/dh_right_bell_press.h"
+#include "dh/animations/dh_pumpkin_bell_press.h"
 #include "dh/animations/dh_high_bell_press.h"
 
 DH_START_NAMESPACE
 
-constexpr int bg_x = (256 - 240) / 2;
-constexpr int bg_y = (256 - 160) / 2;
+namespace {
+	constexpr int bg_x = (256 - 240) / 2;
+	constexpr int bg_y = (256 - 160) / 2;
+}
 
 camera::camera():
 	background_bg(background_frames[0]->create_bg(bg_x, bg_y)),
@@ -37,6 +45,16 @@ void camera::set_doorbell_position(int pos) {
 		case 2: {
 			doorbell_frames = dh_close_bell_frames;
 			doorbell_first_index = dh_close_bell_first_index;
+			break;
+		}
+		case 3: {
+			doorbell_frames = dh_close_left_bell_frames;
+			doorbell_first_index = dh_close_left_bell_first_index;
+			break;
+		}
+		case 4: {
+			doorbell_frames = dh_pumpkin_bell_frames;
+			doorbell_first_index = dh_pumpkin_bell_first_index;
 			break;
 		}
 		default: {}
@@ -156,6 +174,16 @@ bool camera::on_a_press() {
 				animation_data = animations::dh_close_bell_press_data;
 				break;
 			}
+			case 3: {
+				animation = animations::dh_close_left_bell_press_frames;
+				animation_data = animations::dh_close_left_bell_press_data;
+				break;
+			}
+			case 4: {
+				animation = animations::dh_pumpkin_bell_press_frames;
+				animation_data = animations::dh_pumpkin_bell_press_data;
+				break;
+			}
 			default: {}
 		}
 
@@ -186,6 +214,19 @@ bool camera::update_animation() {
 			(void)shift(animation_data[1] > x ? 1 : -1, 0);
 		} else {
 			animation_frame++;
+
+			// Play doorbell sound effect at certain time for some press animations
+			if(animation_frame == 5) {
+				if(animation == animations::dh_close_bell_press_frames) {
+					bn::sound_items::dh_doorbell.play();
+				} else if(
+					animation == animations::dh_close_left_bell_press_frames ||
+					animation == animations::dh_pumpkin_bell_press_frames
+				) {
+					bn::sound_items::dh_fall.play();
+				}
+			}
+
 			if(!animation_done() && _overlay_bg) {
 				_overlay_bg->set_item(*animation[animation_frame]);
 				_overlay_bg->set_visible(true);
@@ -194,6 +235,14 @@ bool camera::update_animation() {
 	}
 
 	return false;
+}
+
+void camera::play_animation_done_sound_effect() {
+	if(animation == animations::dh_close_bell_press_frames) {
+		bn::sound_items::dh_fall.play();
+	} else {
+		bn::sound_items::dh_doorbell.play();
+	}
 }
 
 bool camera::animation_done() {

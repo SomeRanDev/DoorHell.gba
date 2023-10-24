@@ -28,6 +28,8 @@ public:
 	[[nodiscard]] bool update_animation();
 	[[nodiscard]] bool animation_done();
 
+	void play_animation_done_sound_effect();
+
 	static constexpr int world_width = 11;
 	static constexpr int world_height = 13;
 

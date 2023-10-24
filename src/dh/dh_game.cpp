@@ -35,7 +35,18 @@ game::game(int completed_games, const mj::game_data& data):
 }
 
 void game::init(const mj::game_data& data) {
-	cam.set_doorbell_position(data.random.get_int(3));
+	// Ensure previous two positions not used
+	static int previous[] = {-1, -1};
+
+	int position;
+	do {
+		position = data.random.get_int(5);
+	} while(position == previous[0] || position == previous[1]);
+
+	previous[0] = previous[1];
+	previous[1] = position;
+
+	cam.set_doorbell_position(position);
 }
 
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
@@ -148,7 +159,7 @@ void game::update_game() {
 	} else if(cam.update_animation()) {
 		update_movement();
 	} else if(!_victory && cam.animation_done()) {
-		bn::sound_items::dh_doorbell.play();
+		cam.play_animation_done_sound_effect();
 		set_victory();
 	}
 
@@ -193,8 +204,12 @@ void game::update_movement() {
 	static int last_move_type = -1;
 	int move_type = (y * 3) + x;
 
-	if(last_move_type == move_type && camera_move_cooldown > 0) {
-		camera_move_cooldown--;
+	if(camera_move_cooldown > 0) {
+		if(last_move_type != move_type) {
+			camera_move_cooldown = 0;
+		} else {
+			camera_move_cooldown--;
+		}
 	} else if(cam.shift(x, y)) {
 		last_move_type = move_type;
 		camera_move_cooldown = 2;

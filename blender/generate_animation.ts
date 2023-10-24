@@ -16,24 +16,50 @@ import { decode as pngDecode } from "https://deno.land/x/pngs/mod.ts";
 import { BitmapEncoder } from "./Encoder.ts";
 import { Buffer as NodeBuffer } from "https://deno.land/x/node_buffer@1.1.0/mod.ts";
 
-function bmpEncode(imgData: { data: Uint8Array, width: number, height: number }) {
+// Check there are 4 arguments
+if(Deno.args.length < 4) {
+	throw "Missing arguments.";
+}
+
+// Get arguments
+const name = Deno.args[0];
+const startIndex = parseInt(Deno.args[1]);
+const endIndex = parseInt(Deno.args[2]);
+const requiredCameraPos = parseInt(Deno.args[3]);
+const renderTransparent = Deno.args[4] !== "false";
+
+/**
+ * Converts the png data into encoded bmp data
+ * @param imgData The image data
+ * @returns 
+ */
+function bmpEncode(data: Uint8Array, width: number, height: number) {
 	const arr: number[] = [];
-	const inputData = imgData.data;
+	const inputData = data;
 
-	const r = inputData[0];
-	const g = inputData[1];
-	const b = inputData[2];
-	const a = inputData[3];
+	if(renderTransparent) {
+		const r = inputData[0];
+		const g = inputData[1];
+		const b = inputData[2];
+		const a = inputData[3];
 
-	function isClose(n: number) { return n >= -1 && n <= 1; }
-	function isTransparent(index: number) {
-		return isClose(inputData[index] - r) && isClose(inputData[index+1] - g) && isClose(inputData[index+2] - b);
-	}
-	
-	for(let i = 0; i < inputData.length; i += 4) {
-		if(isTransparent(i)) {
-			arr.push(255); arr.push(255); arr.push(255); arr.push(0);
-		} else {
+		function isClose(n: number) { return n >= -1 && n <= 1; }
+		function isTransparent(index: number) {
+			return isClose(inputData[index] - r) && isClose(inputData[index+1] - g) && isClose(inputData[index+2] - b);
+		}
+
+		for(let i = 0; i < inputData.length; i += 4) {
+			if(isTransparent(i)) {
+				arr.push(255); arr.push(255); arr.push(255); arr.push(0);
+			} else {
+				arr.push(inputData[i + 3]);
+				arr.push(inputData[i + 2]);
+				arr.push(inputData[i + 1]);
+				arr.push(inputData[i]);
+			}
+		}
+	} else {
+		for(let i = 0; i < inputData.length; i += 4) {
 			arr.push(inputData[i + 3]);
 			arr.push(inputData[i + 2]);
 			arr.push(inputData[i + 1]);
@@ -43,28 +69,18 @@ function bmpEncode(imgData: { data: Uint8Array, width: number, height: number })
 
 	const encoder = new BitmapEncoder({
 		data: NodeBuffer.from(arr),
-		width: imgData.width,
-		height: imgData.height
+		width: width,
+		height: height
 	});
-    const data = encoder.encode();
+
+    const bmpData = encoder.encode();
 
     return {
-        data: data,
-        width: imgData.width,
-        height: imgData.height
+        data: bmpData,
+        width: width,
+        height: height
     };
 }
-
-// Check there are 4 arguments
-if(Deno.args.length !== 4) {
-	throw "Missing arguments.";
-}
-
-// Get arguments
-const name = Deno.args[0];
-const startIndex = parseInt(Deno.args[1]);
-const endIndex = parseInt(Deno.args[2]);
-const requiredCameraPos = parseInt(Deno.args[3]);
 
 /**
  * Gets the path to the ./Output png file given its index
@@ -99,17 +115,14 @@ async function processImage(index: number) {
 	// Convert .png to .bmp
 	const pngFile = await Deno.readFile(getFrame(index));
 	const pngData = pngDecode(pngFile);
-	const bitmap = bmpEncode({
-		data: pngData.image,
-		width: pngData.width,
-		height: pngData.height
-	});
+	const bitmap = bmpEncode(pngData.image, pngData.width, pngData.height);
 	Deno.writeFileSync(`${outPath}.bmp`, bitmap.data);
 
 	// Generate .json
 	Deno.writeTextFileSync(`${outPath}.json`, `{
 	"type": "regular_bg",
-	"bpp_mode": "bpp_4"
+	"bpp_mode": "bpp_4",
+	"compression": "auto"
 }`);
 
 	// Generate header data
