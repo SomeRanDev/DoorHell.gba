@@ -71,4 +71,4 @@ constexpr int game_frame_count = ${items.length} - intro_frame_count;
 DH_END_NAMESPACE
 `;
 
-Deno.writeTextFileSync("./include/dh/dh_intro.h", output);
+Deno.writeTextFileSync("./include/dh/frames/dh_intro.h", output);

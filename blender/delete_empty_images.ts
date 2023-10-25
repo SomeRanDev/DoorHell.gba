@@ -107,7 +107,12 @@ let arrayMembersStr = "";
 	arrayMembersStr = arrayMemberJoined.join(",\n\t");
 }
 
-Deno.writeTextFileSync(`../include/dh/${name}.h`, `#pragma once
+const includeFolder = `../include/dh/frames`;
+if(!existsSync(includeFolder)) {
+	Deno.mkdir(includeFolder);
+}
+
+Deno.writeTextFileSync(`${includeFolder}/${name}.h`, `#pragma once
 
 #include "dh_defines.h"
 
