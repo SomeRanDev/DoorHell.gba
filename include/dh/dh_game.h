@@ -7,8 +7,8 @@
 
 #include "mj/mj_game.h"
 
-#include "dh/dh_defines.h"
-#include "dh/dh_camera.h"
+#include "dh_defines.h"
+#include "dh_camera.h"
 
 DH_START_NAMESPACE
 

@@ -1,21 +1,21 @@
-#include "dh/dh_camera.h"
+#include "dh_camera.h"
 
 #include "bn_sound_items.h"
 
-#include "dh/dh_intro.h"
-#include "dh/dh_high_bell.h"
-#include "dh/dh_window_bell.h"
-#include "dh/dh_right_bell.h"
-#include "dh/dh_pumpkin_bell.h"
-#include "dh/dh_close_bell.h"
-#include "dh/dh_close_left_bell.h"
+#include "dh_intro.h"
+#include "dh_high_bell.h"
+#include "dh_window_bell.h"
+#include "dh_right_bell.h"
+#include "dh_pumpkin_bell.h"
+#include "dh_close_bell.h"
+#include "dh_close_left_bell.h"
 
-#include "dh/animations/dh_close_bell_press.h"
-#include "dh/animations/dh_close_left_bell_press.h"
-#include "dh/animations/dh_right_bell_press.h"
-#include "dh/animations/dh_pumpkin_bell_press.h"
-#include "dh/animations/dh_high_bell_press.h"
-#include "dh/animations/dh_window_bell_press.h"
+#include "animations/dh_close_bell_press.h"
+#include "animations/dh_close_left_bell_press.h"
+#include "animations/dh_right_bell_press.h"
+#include "animations/dh_pumpkin_bell_press.h"
+#include "animations/dh_high_bell_press.h"
+#include "animations/dh_window_bell_press.h"
 
 DH_START_NAMESPACE
 

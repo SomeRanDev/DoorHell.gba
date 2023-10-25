@@ -3,7 +3,7 @@
 #include "bn_regular_bg_ptr.h"
 #include "bn_optional.h"
 
-#include "dh/dh_defines.h"
+#include "dh_defines.h"
 
 DH_START_NAMESPACE
 

@@ -1,4 +1,4 @@
-#include "dh/dh_game.h"
+#include "dh_game.h"
 
 #include "mj/mj_game_list.h"
 

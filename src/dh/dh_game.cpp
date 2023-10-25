@@ -1,9 +1,9 @@
-#include "dh/dh_game.h"
+#include "dh_game.h"
 
 #include "bn_keypad.h"
 #include "bn_math.h"
 
-#include "dh/dh_intro.h"
+#include "dh_intro.h"
 
 #include "bn_sound_items.h"
 

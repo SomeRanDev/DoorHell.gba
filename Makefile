@@ -31,7 +31,7 @@ BUILD       :=  build
 LIBBUTANO   :=  Z:/GBADev/butano-gba/butano
 PYTHON      :=  python
 SOURCES     :=  src src/dh src/mj
-INCLUDES    :=  include include/mj
+INCLUDES    :=  include include/dh include/mj
 DATA        :=
 GRAPHICS    :=  graphics/mj\
 				graphics/dh\
