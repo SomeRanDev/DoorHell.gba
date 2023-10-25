@@ -1,0 +1,1 @@
+deno run --allow-read --allow-write generate_animation.ts dh_window_bell_press 270 290 58

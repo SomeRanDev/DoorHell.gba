@@ -4,6 +4,7 @@
 
 #include "dh/dh_intro.h"
 #include "dh/dh_high_bell.h"
+#include "dh/dh_window_bell.h"
 #include "dh/dh_right_bell.h"
 #include "dh/dh_pumpkin_bell.h"
 #include "dh/dh_close_bell.h"
@@ -14,6 +15,7 @@
 #include "dh/animations/dh_right_bell_press.h"
 #include "dh/animations/dh_pumpkin_bell_press.h"
 #include "dh/animations/dh_high_bell_press.h"
+#include "dh/animations/dh_window_bell_press.h"
 
 DH_START_NAMESPACE
 
@@ -55,6 +57,11 @@ void camera::set_doorbell_position(int pos) {
 		case 4: {
 			doorbell_frames = dh_pumpkin_bell_frames;
 			doorbell_first_index = dh_pumpkin_bell_first_index;
+			break;
+		}
+		case 5: {
+			doorbell_frames = dh_window_bell_frames;
+			doorbell_first_index = dh_window_bell_first_index;
 			break;
 		}
 		default: {}
@@ -141,7 +148,8 @@ void camera::restrict_movement(int& _x, int& _y) const {
 		}
 	}
 
-	if(_y != 0) {
+	auto new_y = y + _y;
+	if(_y != 0 && new_y >= 0 && new_y < world_height) {
 		if(x > world_width_2) {
 			_x = -1;
 			_y = 0;
@@ -182,6 +190,11 @@ bool camera::on_a_press() {
 			case 4: {
 				animation = animations::dh_pumpkin_bell_press_frames;
 				animation_data = animations::dh_pumpkin_bell_press_data;
+				break;
+			}
+			case 5: {
+				animation = animations::dh_window_bell_press_frames;
+				animation_data = animations::dh_window_bell_press_data;
 				break;
 			}
 			default: {}

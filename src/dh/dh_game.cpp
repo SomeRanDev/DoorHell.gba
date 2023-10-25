@@ -40,7 +40,7 @@ void game::init(const mj::game_data& data) {
 
 	int position;
 	do {
-		position = data.random.get_int(5);
+		position = data.random.get_int(6);
 	} while(position == previous[0] || position == previous[1]);
 
 	previous[0] = previous[1];
