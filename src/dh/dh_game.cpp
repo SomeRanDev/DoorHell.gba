@@ -11,12 +11,12 @@ DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	_total_frames(play_bgm())
+	_total_frames(play_bgm(completed_games, data))
 {
-	generate_tutorial_text();
+	generate_tutorial_text(data);
 }
 
-int game::play_bgm() {
+int game::play_bgm(int completed_games, const mj::game_data& data) {
 	return play_jingle(
 		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
 		completed_games,
@@ -24,7 +24,7 @@ int game::play_bgm() {
 	);
 }
 
-void game::generate_tutorial_text() {
+void game::generate_tutorial_text(const mj::game_data& data) {
 	// Show tutorial text
 	auto msg = "Ring the doorbell.";
 	auto x = 260;
@@ -39,10 +39,10 @@ void game::generate_tutorial_text() {
 }
 
 void game::init(const mj::game_data& data) {
-	cam.set_doorbell_position(generate_unique_random_position());
+	cam.set_doorbell_position(generate_unique_random_position(data));
 }
 
-int game::generate_unique_random_position() const {
+int game::generate_unique_random_position(const mj::game_data& data) const {
 	// Ensure previous four positions not used
 	static int previous = 0;
 

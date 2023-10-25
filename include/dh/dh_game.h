@@ -43,11 +43,11 @@ public:
 	mj::game_result play(const mj::game_data& data) final;
 
 private:
-	int play_bgm();
-	void generate_tutorial_text();
+	int play_bgm(int completed_games, const mj::game_data& data);
+	void generate_tutorial_text(const mj::game_data& data);
 
 	void init(const mj::game_data& data);
-	int generate_unique_random_position() const;
+	int generate_unique_random_position(const mj::game_data& data) const;
 
 	void set_current_references(mj::game_result& result, const mj::game_data& data);
 	void reset_current_references();
