@@ -105,9 +105,6 @@ void camera::set_frame_index(int index) {
 		} else if(palette_type == 2) {
 			background_bg.set_palette(bn::bg_palette_items::dh_background_alt_palette);
 		}
-
-		//_bg.set_tiles(frames[24]->tiles_item());
-		//_bg.set_tiles(*frames[intro_frame]);
 }
 
 bool camera::update_intro() {
@@ -154,7 +151,6 @@ void camera::refresh_position() {
 		index = ((4 - y_sec - 1) * (world_width + 3)) - y_off;
 	}
 	set_frame_index(game_frame_start + index);
-	//_bg.set_item(*frames[game_frame_start + index]);
 }
 
 void camera::restrict_movement(int& _x, int& _y) const {
