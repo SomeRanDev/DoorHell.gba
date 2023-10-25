@@ -1,6 +1,11 @@
+# Door Hell Blender
+
 These are the Blender files and scripts used to generate the prerendered frames.
 
-# Rendering Frames or Doorbell
+&nbsp;
+
+## Rendering Frames or Doorbell
+
 First set the playback frames to be:
 ```
 Start: 1
@@ -9,10 +14,15 @@ End 68
 
 Then render with either the `Foreground`, `Background`, or one of the doorbell/overlay objects.
 
+&nbsp;
+
 ## Adding Doorbell or Overlay Object to Game
+
 If rendering a doorbell or overlay object, run the `delete_empty_images.ts` script to remove empty images. This will generate a header file for the images and store them in a folder named `NAME_out`.
 
 Use Aseprite to convert the .png files into valid 16 color, 256x256px .bmp files into `NAME_out/out`. Copy `NAME_out/out` to a `graphics/` folder. Add it to `Makefile`.
+
+&nbsp;
 
 ## Rendering and Adding Animation
 First render the animation with its corresponding frames in Blender. For example, "Close Bell Press" is `Start: 110` `End: 120` as can be seen in its `generate_dh_close_bell_press.bat` file.
