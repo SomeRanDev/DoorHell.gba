@@ -8,7 +8,6 @@
 #include "mj/mj_game.h"
 
 #include "dh/dh_defines.h"
-#include "dh/dh_hand.h"
 #include "dh/dh_camera.h"
 
 DH_START_NAMESPACE
@@ -44,7 +43,11 @@ public:
 	mj::game_result play(const mj::game_data& data) final;
 
 private:
+	int play_bgm();
+	void generate_tutorial_text();
+
 	void init(const mj::game_data& data);
+	int generate_unique_random_position() const;
 
 	void set_current_references(mj::game_result& result, const mj::game_data& data);
 	void reset_current_references();
@@ -78,10 +81,6 @@ private:
 	// CAMERA
 	camera cam;
 	int camera_move_cooldown = 0;
-
-	// -------------------------------------------
-	// GAME
-	hand hand_obj;
 
 	// -------------------------------------------
 	// MICRO GAME

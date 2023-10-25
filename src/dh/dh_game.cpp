@@ -11,20 +11,24 @@ DH_START_NAMESPACE
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	_total_frames(
-		play_jingle(
-			completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
-			completed_games,
-			data
-		)
-	)
+	_total_frames(play_bgm())
 {
-	hand_obj.start_intro();
+	generate_tutorial_text();
+}
 
+int game::play_bgm() {
+	return play_jingle(
+		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
+		completed_games,
+		data
+	);
+}
+
+void game::generate_tutorial_text() {
 	// Show tutorial text
 	auto msg = "Ring the doorbell.";
 	auto x = 260;
-    data.small_text_generator.generate(x, 5, msg, text_sprites);
+	data.small_text_generator.generate(x, 5, msg, text_sprites);
 
 	// Record text offsets
 	auto mid = data.small_text_generator.width(msg) / -2;
@@ -35,18 +39,29 @@ game::game(int completed_games, const mj::game_data& data):
 }
 
 void game::init(const mj::game_data& data) {
-	// Ensure previous two positions not used
-	static int previous[] = {-1, -1};
+	cam.set_doorbell_position(generate_unique_random_position());
+}
 
+int game::generate_unique_random_position() const {
+	// Ensure previous four positions not used
+	static int previous = 0;
+
+	// There's probably better way to do this... but... uh.... it's a game jam game bro gimme a break lmao
 	int position;
 	do {
-		position = data.random.get_int(6);
-	} while(position == previous[0] || position == previous[1]);
+		position = data.random.get_int(6) + 1; // Add one so zero doesn't count
+	} while(
+		position == (previous & 0xf) ||
+		position == ((previous >> 4) & 0xf) ||
+		position == ((previous >> 8) & 0xf) ||
+		position == ((previous >> 12) & 0xf)
+	);
 
-	previous[0] = previous[1];
-	previous[1] = position;
+	// Add result to "previous" variable
+	previous <<= 4;
+	previous |= position;
 
-	cam.set_doorbell_position(position);
+	return position - 1; // Remove one since positions start from zero
 }
 
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
@@ -119,9 +134,6 @@ void game::update_intro() {
 	if(cam.update_intro()) {
 		state = Playing;
 	}
-	if(cam.should_update_hand_intro()) {
-		//hand_obj.update_intro();
-	}
 }
 
 void game::update_text() {
@@ -145,15 +157,6 @@ void game::update_text() {
 }
 
 void game::update_game() {
-	// if(!hand_obj.is_actively_pressing()) {
-	// 	hand_obj.update_movement();
-	// 	if(bn::keypad::a_pressed()) {
-	// 		hand_obj.press();
-	// 	}
-	// }
-
-	// hand_obj.update();
-
 	if(_sleep > 0) {
 		_sleep--;
 	} else if(cam.update_animation()) {
@@ -162,17 +165,6 @@ void game::update_game() {
 		cam.play_animation_done_sound_effect();
 		set_victory();
 	}
-
-	//hand_obj.set_tiles(bn::sprite_items::dh_hand.tiles_item(), 4);
-
-	// if(bn::keypad::a_pressed()) {
-	// 	_bg.set_item(bn::regular_bg_items::tmg_you_win);
-	// 	set_victory();
-	// }
-	// else if(!bn::keypad::start_pressed() && bn::keypad::any_pressed()) {
-	// 	_bg.set_item(bn::regular_bg_items::tmg_you_lose);
-	// 	set_defeat();
-	// }
 }
 
 void game::update_movement() {
