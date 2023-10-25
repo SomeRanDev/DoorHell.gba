@@ -11,6 +11,7 @@ class camera {
 public:
 	camera();
 
+	void set_palette_type(int type);
 	void set_doorbell_position(int pos);
 
 	void set_frame_index(int index);
@@ -41,6 +42,8 @@ private:
 	const bn::regular_bg_item* const* doorbell_frames;
 	int doorbell_first_index = 0;
 	int doorbell_position = 0;
+
+	int palette_type = 0;
 
 	int current_overlay_bg_index = -1;
 

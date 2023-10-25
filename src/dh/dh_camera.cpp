@@ -1,6 +1,15 @@
 #include "dh_camera.h"
 
+#include "bn_bpp_mode.h"
+#include "bn_bg_palette_item.h"
+#include "bn_bg_palette_ptr.h"
+#include "bn_color.h"
 #include "bn_sound_items.h"
+
+#include "bn_bg_palette_items_dh_background_alt_palette.h"
+#include "bn_bg_palette_items_dh_foreground_alt_palette.h"
+#include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_background_palette.h"
+#include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_foreground_palette.h"
 
 #include "dh_intro.h"
 #include "dh_high_bell.h"
@@ -28,6 +37,10 @@ camera::camera():
 	background_bg(background_frames[0]->create_bg(bg_x, bg_y)),
 	foreground_bg(frames[0]->create_bg(bg_x, bg_y))
 {
+}
+
+void camera::set_palette_type(int type) {
+	palette_type = type;
 }
 
 void camera::set_doorbell_position(int pos) {
@@ -86,6 +99,13 @@ void camera::set_frame_index(int index) {
 
 		foreground_bg.set_item(*frames[index]);
 		background_bg.set_item(*background_frames[index]);
+
+		if(palette_type == 1) {
+			foreground_bg.set_palette(bn::bg_palette_items::dh_foreground_alt_palette);
+		} else if(palette_type == 2) {
+			background_bg.set_palette(bn::bg_palette_items::dh_background_alt_palette);
+		}
+
 		//_bg.set_tiles(frames[24]->tiles_item());
 		//_bg.set_tiles(*frames[intro_frame]);
 }
@@ -243,6 +263,15 @@ bool camera::update_animation() {
 			if(!animation_done() && _overlay_bg) {
 				_overlay_bg->set_item(*animation[animation_frame]);
 				_overlay_bg->set_visible(true);
+
+				// Replace palette for pumpkin bell press animation
+				if(animation == animations::dh_pumpkin_bell_press_frames) {
+					if(palette_type == 1) {
+						_overlay_bg->set_palette(bn::bg_palette_items::dh_pumpkin_bell_press_alt_foreground_palette);
+					} else if(palette_type == 2) {
+						_overlay_bg->set_palette(bn::bg_palette_items::dh_pumpkin_bell_press_alt_background_palette);
+					}
+				}
 			}
 		}
 	}

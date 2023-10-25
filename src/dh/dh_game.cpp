@@ -9,11 +9,14 @@
 
 DH_START_NAMESPACE
 
+int game::progress = 0;
+
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
 	_total_frames(play_bgm(completed_games, data))
 {
 	generate_tutorial_text(data);
+	setup_palette(completed_games);
 }
 
 int game::play_bgm(int completed_games, const mj::game_data& data) {
@@ -35,6 +38,15 @@ void game::generate_tutorial_text(const mj::game_data& data) {
 	auto len = text_sprites.size();
 	for(decltype(len) i = 0; i < len; i++) {
 		text_offsets.push_back(text_sprites[i].x() - x + mid);
+	}
+}
+
+void game::setup_palette(int completed_games) {
+	if(progress == 2) {
+		cam.set_palette_type(1);
+	} else if(progress == 4) {
+		cam.set_palette_type(2);
+		progress = 0;
 	}
 }
 
@@ -111,6 +123,7 @@ void game::set_victory() {
 		current_result->remove_title = true;
 	}
 	_victory = true;
+	progress++;
 }
 
 void game::set_defeat() {

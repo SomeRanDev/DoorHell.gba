@@ -43,8 +43,15 @@ public:
 	mj::game_result play(const mj::game_data& data) final;
 
 private:
+	// -------------------------------------------
+	// STATICS
+	static int progress;
+
+	// -------------------------------------------
+	// FUNCTIONS
 	int play_bgm(int completed_games, const mj::game_data& data);
 	void generate_tutorial_text(const mj::game_data& data);
+	void setup_palette(int completed_games);
 
 	void init(const mj::game_data& data);
 	int generate_unique_random_position(const mj::game_data& data) const;
