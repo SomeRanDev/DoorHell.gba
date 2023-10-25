@@ -1,5 +1,3 @@
-dh_hand.bmp
-dh_background.bmp
 frames/dh_frames_*.bmp
 background_frames/dh_background_frames_*.bmp
 close_bell/dh_close_bell_*.bmp
