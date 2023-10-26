@@ -1,0 +1,1 @@
+deno run --allow-read --allow-write generate_animation.ts dh_part_2_intro 310 350 -1 false false

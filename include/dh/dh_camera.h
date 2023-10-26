@@ -9,13 +9,18 @@ DH_START_NAMESPACE
 
 class camera {
 public:
-	camera();
+	camera(bool is_part_2);
+
+	[[nodiscard]] bn::regular_bg_item const* initial_background(bool _is_part_2) const;
+	[[nodiscard]] bn::regular_bg_item const* initial_foreground(bool _is_part_2) const;
+	void create_foreground(bool _is_part_2);
 
 	void set_palette_type(int type);
 	void set_doorbell_position(int pos);
 
 	void set_frame_index(int index);
 
+	[[nodiscard]] int get_intro_frame_count() const;
 	[[nodiscard]] bool update_intro();
 	[[nodiscard]] bool should_update_hand_intro() const;
 
@@ -57,6 +62,8 @@ private:
 	int const* animation_data = nullptr;
 	int animation_frame = 0;
 	int animation_time = 0;
+
+	bool is_part_2;
 };
 
 DH_END_NAMESPACE

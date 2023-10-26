@@ -26,6 +26,8 @@
 #include "animations/dh_high_bell_press.h"
 #include "animations/dh_window_bell_press.h"
 
+#include "animations/dh_part_2_intro.h"
+
 DH_START_NAMESPACE
 
 namespace {
@@ -33,10 +35,19 @@ namespace {
 	constexpr int bg_y = (256 - 160) / 2;
 }
 
-camera::camera():
-	background_bg(background_frames[0]->create_bg(bg_x, bg_y)),
-	foreground_bg(frames[0]->create_bg(bg_x, bg_y))
+camera::camera(bool _is_part_2):
+	background_bg(initial_background(_is_part_2)->create_bg(bg_x, bg_y)),
+	foreground_bg(initial_foreground(_is_part_2)->create_bg(bg_x, bg_y)),
+	is_part_2(_is_part_2)
 {
+}
+
+bn::regular_bg_item const* camera::initial_background(bool _is_part_2) const {
+	return _is_part_2 ? animations::dh_part_2_intro_back_frames[0] : background_frames[0];
+}
+
+bn::regular_bg_item const* camera::initial_foreground(bool _is_part_2) const {
+	return _is_part_2 ? animations::dh_part_2_intro_frames[0] : frames[0];
 }
 
 void camera::set_palette_type(int type) {
@@ -85,37 +96,47 @@ void camera::set_doorbell_position(int pos) {
 }
 
 void camera::set_frame_index(int index) {
-		if(_overlay_bg && (animation == nullptr || animation_frame == -1)) {
-			if(doorbell_frames[index] == nullptr) {
-				_overlay_bg->set_visible(false);
-			} else {
-				if(current_overlay_bg_index != index) {
-					current_overlay_bg_index = index;
-					_overlay_bg->set_item(*doorbell_frames[index]);
-				}
-				_overlay_bg->set_visible(true);
+	if(is_part_2) {
+		foreground_bg.set_item(*animations::dh_part_2_intro_frames[index]);
+		background_bg.set_item(*animations::dh_part_2_intro_back_frames[index]);
+		return;
+	}
+
+	if(_overlay_bg && (animation == nullptr || animation_frame == -1)) {
+		if(doorbell_frames[index] == nullptr) {
+			_overlay_bg->set_visible(false);
+		} else {
+			if(current_overlay_bg_index != index) {
+				current_overlay_bg_index = index;
+				_overlay_bg->set_item(*doorbell_frames[index]);
 			}
+			_overlay_bg->set_visible(true);
 		}
+	}
 
-		foreground_bg.set_item(*frames[index]);
-		background_bg.set_item(*background_frames[index]);
+	foreground_bg.set_item(*frames[index]);
+	background_bg.set_item(*background_frames[index]);
 
-		if(palette_type == 1) {
-			foreground_bg.set_palette(bn::bg_palette_items::dh_foreground_alt_palette);
-		} else if(palette_type == 2) {
-			background_bg.set_palette(bn::bg_palette_items::dh_background_alt_palette);
-		}
+	if(palette_type == 1) {
+		foreground_bg.set_palette(bn::bg_palette_items::dh_foreground_alt_palette);
+	} else if(palette_type == 2) {
+		background_bg.set_palette(bn::bg_palette_items::dh_background_alt_palette);
+	}
+}
+
+int camera::get_intro_frame_count() const {
+	return is_part_2 ? animations::dh_part_2_intro_length : intro_frame_count;
 }
 
 bool camera::update_intro() {
-	if(intro_time++ > 2) {
+	if(intro_time++ > (is_part_2 ? 3 : 2)) {
 		intro_time = 0;
 		intro_frame++;
-		if(intro_frame < intro_frame_count) {
+		if(intro_frame < get_intro_frame_count()) {
 			set_frame_index(intro_frame);
 		}
 	}
-	return intro_frame >= intro_frame_count;
+	return intro_frame >= get_intro_frame_count();
 }
 
 bool camera::should_update_hand_intro() const {

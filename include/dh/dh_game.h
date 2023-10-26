@@ -22,7 +22,15 @@ public:
 	game(int completed_games, const mj::game_data& data);
 
 	[[nodiscard]]
+	bool is_part_2() const {
+		return progress % 2 == 1;
+	}
+
+	[[nodiscard]]
 	bn::string<16> title() const final {
+		//if(is_part_2()) {
+			return "Door Hell (Pt 2)";
+		//}
 		return "Door Hell";
 	}
 

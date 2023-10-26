@@ -3,7 +3,7 @@
 	Generates its header file and converts the files from .png to .bmp
 
 	One argument:
-	generate_animation.ts <name> <start index> <end index> <required camera position index>
+	generate_animation.ts <name> <start index> <end index> <required camera position index> <render transparency=true> <bpp mode 4=true>
 
 	Run using deno:
 	deno run --allow-read --allow-write generate_animation.ts dh_close_bell_press 110 116 26
@@ -27,6 +27,7 @@ const startIndex = parseInt(Deno.args[1]);
 const endIndex = parseInt(Deno.args[2]);
 const requiredCameraPos = parseInt(Deno.args[3]);
 const renderTransparent = Deno.args[4] !== "false";
+const useBppMode4 = Deno.args[5] !== "false";
 
 /**
  * Converts the png data into encoded bmp data
@@ -121,7 +122,7 @@ async function processImage(index: number) {
 	// Generate .json
 	Deno.writeTextFileSync(`${outPath}.json`, `{
 	"type": "regular_bg",
-	"bpp_mode": "bpp_4",
+	"bpp_mode": "${useBppMode4 ? "bpp_4" : "bpp_8"}",
 	"compression": "auto"
 }`);
 
@@ -143,6 +144,15 @@ if(!existsSync(includePath)) {
 	Deno.mkdir(includePath, { recursive: true });
 }
 
+let dataMembers = "";
+if(requiredCameraPos === -1) {
+	dataMembers = `constexpr int ${name}_length = ${includes.length};`;
+} else {
+	dataMembers = `constexpr int ${name}_data[] = {
+	${includes.length}, ${(requiredCameraPos - 16) % 14}, ${Math.floor((requiredCameraPos - 16) / 14) * 4}
+};`;
+}
+
 // Generate header file
 Deno.writeTextFileSync(`${includePath}/${name}.h`, `#pragma once
 
@@ -159,9 +169,8 @@ DH_START_ANIMATIONS_NAMESPACE
 
 #define ITEM(INDEX) &bn::regular_bg_items::${name}_ ## INDEX
 
-constexpr int ${name}_data[] = {
-	${includes.length}, ${(requiredCameraPos - 16) % 14}, ${Math.floor((requiredCameraPos - 16) / 14) * 4}
-};
+${dataMembers}
+
 constexpr bn::regular_bg_item const* ${name}_frames[] = {
 	${items.join(", ")}
 };

@@ -48,7 +48,9 @@ GRAPHICS    :=  graphics/mj\
 				graphics/dh/dh_right_bell_press\
 				graphics/dh/dh_pumpkin_bell_press\
 				graphics/dh/dh_high_bell_press\
-				graphics/dh/dh_window_bell_press
+				graphics/dh/dh_window_bell_press\
+				graphics/dh/dh_part_2_intro\
+				graphics/dh/dh_part_2_intro_back
 AUDIO       :=  audio audio/mj audio/dh
 DMGAUDIO    :=  dmg_audio dmg_audio/mj
 ROMTITLE    :=  GBA MJAM 23

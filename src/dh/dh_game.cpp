@@ -3,8 +3,6 @@
 #include "bn_keypad.h"
 #include "bn_math.h"
 
-#include "dh_intro.h"
-
 #include "bn_sound_items.h"
 
 DH_START_NAMESPACE
@@ -13,6 +11,7 @@ int game::progress = 0;
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
+	cam(true),//(false),
 	_total_frames(play_bgm(completed_games, data))
 {
 	generate_tutorial_text(data);
@@ -21,7 +20,7 @@ game::game(int completed_games, const mj::game_data& data):
 
 int game::play_bgm(int completed_games, const mj::game_data& data) {
 	return play_jingle(
-		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
+		mj::game_jingle_type::TOTSNUK16,//completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
 		completed_games,
 		data
 	);
@@ -41,7 +40,7 @@ void game::generate_tutorial_text(const mj::game_data& data) {
 	}
 }
 
-void game::setup_palette(int completed_games) {
+void game::setup_palette(int /* completed_games */) {
 	if(progress == 2) {
 		cam.set_palette_type(1);
 	} else if(progress == 4) {
