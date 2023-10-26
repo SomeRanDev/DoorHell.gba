@@ -11,8 +11,9 @@ int game::progress = 0;
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	cam(true),//(false),
-	_total_frames(play_bgm(completed_games, data))
+	cam(true),//(check_if_part_2()),
+	total_frames_value(play_bgm(completed_games, data)), 
+	is_part_2(check_if_part_2())
 {
 	generate_tutorial_text(data);
 	setup_palette(completed_games);
@@ -84,21 +85,21 @@ void game::fade_out([[maybe_unused]] const mj::game_data& data) {
 }
 
 mj::game_result game::play(const mj::game_data& data) {
-	if(!_initialized) {
-		_initialized = true;
+	if(!is_initialized) {
+		is_initialized = true;
 		init(data);
 	}
 
 	mj::game_result result;
 	result.exit = data.pending_frames == 0;
 
-	if(!_victory && !_defeat) {
+	if(!is_victory && !is_defeat) {
 		set_current_references(result, data);
 		update();
 		reset_current_references();
 	} else {
-		if(_show_result_frames) {
-			_show_result_frames--;
+		if(show_result_frames) {
+			show_result_frames--;
 		} else {
 			result.exit = true;
 		}
@@ -121,7 +122,7 @@ void game::set_victory() {
 	if(current_result) {
 		current_result->remove_title = true;
 	}
-	_victory = true;
+	is_victory = true;
 	progress++;
 }
 
@@ -129,12 +130,14 @@ void game::set_defeat() {
 	if(current_result) {
 		current_result->remove_title = true;
 	}
-	_defeat = true;
+	is_defeat = true;
 }
 
 void game::update() {
 	if(state == Intro) {
 		update_intro();
+	} else if(is_part_2) {
+		update_game_part_2();
 	} else {
 		update_game();
 	}
@@ -145,6 +148,10 @@ void game::update() {
 void game::update_intro() {
 	if(cam.update_intro()) {
 		state = Playing;
+
+		if(is_part_2) {
+			cam.clear_backgrounds();
+		}
 	}
 }
 
@@ -169,11 +176,11 @@ void game::update_text() {
 }
 
 void game::update_game() {
-	if(_sleep > 0) {
-		_sleep--;
+	if(sleep > 0) {
+		sleep--;
 	} else if(cam.update_animation()) {
 		update_movement();
-	} else if(!_victory && cam.animation_done()) {
+	} else if(!is_victory && cam.animation_done()) {
 		cam.play_animation_done_sound_effect();
 		set_victory();
 	}
@@ -185,7 +192,7 @@ void game::update_movement() {
 			return;
 		} else {
 			bn::sound_items::dh_denied.play();
-			_sleep = 16;
+			sleep = 16;
 			return;
 		}
 	}
@@ -218,6 +225,10 @@ void game::update_movement() {
 		last_move_type = move_type;
 		camera_move_cooldown = 2;
 	}
+}
+
+void game::update_game_part_2() {
+
 }
 
 DH_END_NAMESPACE

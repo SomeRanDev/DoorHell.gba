@@ -36,15 +36,15 @@
 #include "bn_regular_bg_items_dh_part_2_intro_30.h"
 #include "bn_regular_bg_items_dh_part_2_intro_31.h"
 #include "bn_regular_bg_items_dh_part_2_intro_32.h"
-#include "bn_regular_bg_items_dh_part_2_intro_33.h"
-#include "bn_regular_bg_items_dh_part_2_intro_34.h"
-#include "bn_regular_bg_items_dh_part_2_intro_35.h"
-#include "bn_regular_bg_items_dh_part_2_intro_36.h"
-#include "bn_regular_bg_items_dh_part_2_intro_37.h"
-#include "bn_regular_bg_items_dh_part_2_intro_38.h"
-#include "bn_regular_bg_items_dh_part_2_intro_39.h"
-#include "bn_regular_bg_items_dh_part_2_intro_40.h"
-#include "bn_regular_bg_items_dh_part_2_intro_41.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_33.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_34.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_35.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_36.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_37.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_38.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_39.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_40.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_41.h"
 
 #include "bn_regular_bg_items_dh_part_2_intro_back_1.h"
 #include "bn_regular_bg_items_dh_part_2_intro_back_2.h"
@@ -98,7 +98,10 @@ DH_START_ANIMATIONS_NAMESPACE
 constexpr int dh_part_2_intro_length = 41;
 
 constexpr bn::regular_bg_item const* dh_part_2_intro_frames[] = {
-	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10), ITEM(11), ITEM(12), ITEM(13), ITEM(14), ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20), ITEM(21), ITEM(22), ITEM(23), ITEM(24), ITEM(25), ITEM(26), ITEM(27), ITEM(28), ITEM(29), ITEM(30), ITEM(31), ITEM(32), ITEM(33), ITEM(34), ITEM(35), ITEM(36), ITEM(37), ITEM(38), ITEM(39), ITEM(40), ITEM(41)
+	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10),
+	ITEM(11), ITEM(12), ITEM(13), ITEM(14), ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20),
+	ITEM(21), ITEM(22), ITEM(23), ITEM(24), ITEM(25), ITEM(26), ITEM(27), ITEM(28), ITEM(29), ITEM(30),
+	ITEM(31), ITEM(32), nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
 };
 
 #undef ITEM
@@ -111,7 +114,10 @@ constexpr bn::regular_bg_item const* dh_part_2_intro_frames[] = {
 constexpr int dh_part_2_intro_back_length = 41;
 
 constexpr bn::regular_bg_item const* dh_part_2_intro_back_frames[] = {
-	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10), ITEM(11), ITEM(12), ITEM(13), ITEM(14), ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20), ITEM(21), ITEM(22), ITEM(23), ITEM(24), ITEM(25), ITEM(26), ITEM(27), ITEM(28), ITEM(29), ITEM(30), ITEM(31), ITEM(32), ITEM(33), ITEM(34), ITEM(35), ITEM(36), ITEM(37), ITEM(38), ITEM(39), ITEM(40), ITEM(41)
+	ITEM(1), ITEM(2), ITEM(3), ITEM(4), ITEM(5), ITEM(6), ITEM(7), ITEM(8), ITEM(9), ITEM(10),
+	ITEM(11), ITEM(12), ITEM(13), ITEM(14), ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20),
+	ITEM(21), ITEM(22), ITEM(23), ITEM(24), ITEM(25), ITEM(26), ITEM(27), ITEM(28), ITEM(29), ITEM(30),
+	ITEM(31), ITEM(32), ITEM(33), ITEM(34), ITEM(35), ITEM(36), ITEM(37), ITEM(38), ITEM(39), ITEM(40), ITEM(41)
 };
 
 #undef ITEM

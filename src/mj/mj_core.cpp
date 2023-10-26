@@ -10,6 +10,8 @@
 #include "mj/mj_small_sprite_font.h"
 #include "mj/mj_sprite_font.h"
 
+#include "bn_log.h"
+
 namespace mj
 {
 

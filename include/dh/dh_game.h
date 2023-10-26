@@ -22,7 +22,7 @@ public:
 	game(int completed_games, const mj::game_data& data);
 
 	[[nodiscard]]
-	bool is_part_2() const {
+	bool check_if_part_2() const {
 		return progress % 2 == 1;
 	}
 
@@ -36,12 +36,12 @@ public:
 
 	[[nodiscard]]
 	int total_frames() const final {
-		return _total_frames;
+		return total_frames_value;
 	}
 
 	[[nodiscard]]
 	bool victory() const final {
-		return _victory;
+		return is_victory;
 	}
 
 	void fade_in(const mj::game_data& data) final;
@@ -77,6 +77,8 @@ private:
 	void update_game();
 	void update_movement();
 
+	void update_game_part_2();
+
 	// -------------------------------------------
 	// TEXT SPRITES
 	bn::vector<bn::sprite_ptr, 5> text_sprites;
@@ -99,15 +101,16 @@ private:
 
 	// -------------------------------------------
 	// MICRO GAME
-	int _sleep = 0;
+	int sleep = 0;
 
-	int _total_frames;
-	int _show_result_frames = 60;
+	int total_frames_value;
+	int show_result_frames = 60;
 
-	bool _victory = false;
-	bool _defeat = false;
+	bool is_victory = false;
+	bool is_defeat = false;
 
-	bool _initialized = false;
+	bool is_initialized = false;
+	bool is_part_2 = false;
 };
 
 DH_END_NAMESPACE

@@ -4,6 +4,7 @@
 #include "bn_bg_palette_item.h"
 #include "bn_bg_palette_ptr.h"
 #include "bn_color.h"
+#include "bn_core.h"
 #include "bn_sound_items.h"
 
 #include "bn_bg_palette_items_dh_background_alt_palette.h"
@@ -40,6 +41,7 @@ camera::camera(bool _is_part_2):
 	foreground_bg(initial_foreground(_is_part_2)->create_bg(bg_x, bg_y)),
 	is_part_2(_is_part_2)
 {
+	foreground_bg.set_priority(2);
 }
 
 bn::regular_bg_item const* camera::initial_background(bool _is_part_2) const {
@@ -97,11 +99,13 @@ void camera::set_doorbell_position(int pos) {
 
 void camera::set_frame_index(int index) {
 	if(is_part_2) {
-		foreground_bg.set_item(*animations::dh_part_2_intro_frames[index]);
-		background_bg.set_item(*animations::dh_part_2_intro_back_frames[index]);
-		return;
+		set_frame_index_part_2(index);
+	} else {
+		set_frame_index_part_1(index);
 	}
+}
 
+void camera::set_frame_index_part_1(int index) {
 	if(_overlay_bg && (animation == nullptr || animation_frame == -1)) {
 		if(doorbell_frames[index] == nullptr) {
 			_overlay_bg->set_visible(false);
@@ -124,18 +128,63 @@ void camera::set_frame_index(int index) {
 	}
 }
 
+void camera::set_frame_index_part_2(int index) {
+	/*
+	auto fg_frame = animations::dh_part_2_intro_frames[index];
+	if(fg_frame != nullptr) {
+		foreground_bg.set_item(*fg_frame);
+		foreground_bg.set_visible(true);
+	} else {
+		foreground_bg.set_visible(false);
+	}
+
+	background_bg.set_item(*animations::dh_part_2_intro_back_frames[index]);
+	*/
+}
+
 int camera::get_intro_frame_count() const {
 	return is_part_2 ? animations::dh_part_2_intro_length : intro_frame_count;
 }
 
 bool camera::update_intro() {
-	if(intro_time++ > (is_part_2 ? 3 : 2)) {
+	if(is_part_2) {
+		return update_intro_part_2();
+	} else {
+		return update_intro_part_1();
+	}
+}
+
+bool camera::update_intro_part_1() {
+	if(intro_time++ > 2) {
 		intro_time = 0;
 		intro_frame++;
 		if(intro_frame < get_intro_frame_count()) {
 			set_frame_index(intro_frame);
 		}
 	}
+	return intro_frame >= get_intro_frame_count();
+}
+
+bool camera::update_intro_part_2() {
+	if(intro_frame >= get_intro_frame_count()) {
+		return true;
+	}
+
+	intro_time++;
+	if(intro_time == 2) {
+		auto fg_frame = animations::dh_part_2_intro_frames[intro_frame];
+		if(fg_frame != nullptr) {
+			foreground_bg.set_item(*fg_frame);
+			foreground_bg.set_visible(true);
+		} else {
+			foreground_bg.set_visible(false);
+		}
+	} else if(intro_time == 4) {
+		intro_time = 0;
+		background_bg.set_item(*animations::dh_part_2_intro_back_frames[intro_frame]);
+		intro_frame++;
+	}
+
 	return intro_frame >= get_intro_frame_count();
 }
 
@@ -306,6 +355,12 @@ void camera::play_animation_done_sound_effect() {
 
 bool camera::animation_done() {
 	return animation_frame >= animation_data[0];
+}
+
+void camera::clear_backgrounds() {
+	background_bg.set_visible(false);
+	foreground_bg.set_visible(false);
+	_overlay_bg.reset();
 }
 
 DH_END_NAMESPACE

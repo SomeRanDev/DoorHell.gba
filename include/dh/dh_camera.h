@@ -19,9 +19,13 @@ public:
 	void set_doorbell_position(int pos);
 
 	void set_frame_index(int index);
+	void set_frame_index_part_1(int index);
+	void set_frame_index_part_2(int index);
 
 	[[nodiscard]] int get_intro_frame_count() const;
 	[[nodiscard]] bool update_intro();
+	[[nodiscard]] bool update_intro_part_1();
+	[[nodiscard]] bool update_intro_part_2();
 	[[nodiscard]] bool should_update_hand_intro() const;
 
 	[[nodiscard]] bool set_position(int _x, int _y);
@@ -35,6 +39,8 @@ public:
 	[[nodiscard]] bool animation_done();
 
 	void play_animation_done_sound_effect();
+
+	void clear_backgrounds();
 
 	static constexpr int world_width = 11;
 	static constexpr int world_height = 13;
