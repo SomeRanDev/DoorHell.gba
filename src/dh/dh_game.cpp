@@ -11,25 +11,29 @@ int game::progress = 0;
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	cam(true),//(check_if_part_2()),
-	total_frames_value(play_bgm(completed_games, data)), 
+	cam(check_if_part_2()),
 	is_part_2(check_if_part_2())
 {
-	generate_tutorial_text(data);
-	setup_palette(completed_games);
+	total_frames_value = play_bgm(completed_games, data);
+
+	if(is_part_2) {
+		cam.set_candy_type(data.random.get_int(12));
+	} else {
+		generate_tutorial_text("Ring the doorbell.", data);
+		setup_palette(completed_games);
+	}
 }
 
 int game::play_bgm(int completed_games, const mj::game_data& data) {
-	return play_jingle(
-		mj::game_jingle_type::TOTSNUK16,//completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06,
-		completed_games,
-		data
+	auto jingle = is_part_2 ? mj::game_jingle_type::TOTSNUK16 : (
+		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
 	);
+	return play_jingle(jingle, completed_games, data);
 }
 
-void game::generate_tutorial_text(const mj::game_data& data) {
+void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	// Show tutorial text
-	auto msg = "Ring the doorbell.";
+	//auto msg = "Ring the doorbell.";
 	auto x = 260;
 	data.small_text_generator.generate(x, 5, msg, text_sprites);
 
@@ -37,6 +41,7 @@ void game::generate_tutorial_text(const mj::game_data& data) {
 	auto mid = data.small_text_generator.width(msg) / -2;
 	auto len = text_sprites.size();
 	for(decltype(len) i = 0; i < len; i++) {
+		text_sprites[i].set_bg_priority(1); // show text above backgrounds
 		text_offsets.push_back(text_sprites[i].x() - x + mid);
 	}
 }
@@ -134,6 +139,16 @@ void game::set_defeat() {
 	is_defeat = true;
 }
 
+void game::start_playing() {
+	state = Playing;
+
+	if(is_part_2) {
+		cam.clear_backgrounds();
+		cam.start_part_2();
+		generate_tutorial_text("Pick your favorite.", *current_data);
+	}
+}
+
 void game::update() {
 	if(state == Intro) {
 		update_intro();
@@ -148,16 +163,12 @@ void game::update() {
 
 void game::update_intro() {
 	if(cam.update_intro()) {
-		state = Playing;
-
-		if(is_part_2) {
-			cam.clear_backgrounds();
-		}
+		start_playing();
 	}
 }
 
 void game::update_text() {
-	if(text_ratio < 1.0) {
+	if(text_offsets.size() > 0 && text_ratio < 1.0) {
 		bool is_middle = text_ratio > 0.42 && text_ratio < 0.58;
 		text_ratio += is_middle ? 0.003 : 0.05;
 
@@ -229,7 +240,7 @@ void game::update_movement() {
 }
 
 void game::update_game_part_2() {
-
+	(void)cam.fade_in_candy_background();
 }
 
 DH_END_NAMESPACE

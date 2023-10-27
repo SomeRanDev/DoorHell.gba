@@ -13,6 +13,8 @@
 #include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_background_palette.h"
 #include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_foreground_palette.h"
 
+#include "bn_regular_bg_items_dh_candy_background.h"
+
 #include "frames/dh_intro.h"
 #include "frames/dh_high_bell.h"
 #include "frames/dh_window_bell.h"
@@ -44,15 +46,6 @@ camera::camera(bool _is_part_2):
 	is_part_2(_is_part_2)
 {
 	foreground_bg.set_priority(3);
-
-	if(_is_part_2) {
-		phone_icon_palette = animations::get_palette_from_icon(8).create_palette();
-
-		constexpr auto start = animations::dh_part_2_intro_phone_frames_start;
-		_overlay_bg = animations::dh_part_2_intro_phone_frames[start]->create_bg(bg_x, bg_y);
-		_overlay_bg->set_priority(2);
-		_overlay_bg->set_visible(false);
-	}
 }
 
 bn::regular_bg_item const* camera::initial_background(bool _is_part_2) const {
@@ -105,6 +98,19 @@ void camera::set_doorbell_position(int pos) {
 	}
 
 	_overlay_bg = doorbell_frames[doorbell_first_index]->create_bg(bg_x, bg_y);
+	_overlay_bg->set_visible(false);
+}
+
+void camera::set_candy_type(int type) {
+	if(type < 0 || type > 11) {
+		type = 0;
+	}
+
+	phone_icon_palette = animations::get_palette_from_icon(type).create_palette();
+
+	constexpr auto start = animations::dh_part_2_intro_phone_frames_start;
+	_overlay_bg = animations::dh_part_2_intro_phone_frames[start]->create_bg(bg_x, bg_y);
+	_overlay_bg->set_priority(2);
 	_overlay_bg->set_visible(false);
 }
 
@@ -393,6 +399,25 @@ void camera::clear_backgrounds() {
 	background_bg.set_visible(false);
 	foreground_bg.set_visible(false);
 	if(_overlay_bg) _overlay_bg.reset();
+}
+
+void camera::start_part_2() {
+	background_bg.set_visible(true);
+	background_bg.set_item(bn::regular_bg_items::dh_candy_background);
+
+	phone_icon_palette = bn::bg_palette_ptr::create(bn::regular_bg_items::dh_candy_background.palette_item());
+	phone_icon_palette->set_fade_intensity(1.0);
+
+	background_bg.set_palette(phone_icon_palette.value());
+}
+
+bool camera::fade_in_candy_background() {
+	auto value = phone_icon_palette->fade_intensity() - 0.04;
+	if(value < 0) {
+		value = 0;
+	}
+	phone_icon_palette->set_fade_intensity(value);
+	return value == 0;
 }
 
 DH_END_NAMESPACE

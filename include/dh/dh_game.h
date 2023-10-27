@@ -23,14 +23,14 @@ public:
 
 	[[nodiscard]]
 	bool check_if_part_2() const {
-		return progress % 2 == 1;
+		return true;//progress % 2 == 1;
 	}
 
 	[[nodiscard]]
 	bn::string<16> title() const final {
-		//if(is_part_2()) {
+		if(is_part_2) {
 			return "Door Hell (Pt 2)";
-		//}
+		}
 		return "Door Hell";
 	}
 
@@ -58,7 +58,7 @@ private:
 	// -------------------------------------------
 	// FUNCTIONS
 	int play_bgm(int completed_games, const mj::game_data& data);
-	void generate_tutorial_text(const mj::game_data& data);
+	void generate_tutorial_text(const char* msg, const mj::game_data& data);
 	void setup_palette(int completed_games);
 
 	void init(const mj::game_data& data);
@@ -69,6 +69,8 @@ private:
 
 	void set_victory();
 	void set_defeat();
+
+	void start_playing();
 
 	void update();
 

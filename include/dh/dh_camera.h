@@ -19,6 +19,8 @@ public:
 	void set_palette_type(int type);
 	void set_doorbell_position(int pos);
 
+	void set_candy_type(int type);
+
 	void set_frame_index(int index);
 	void set_frame_index_part_1(int index);
 	void set_frame_index_part_2(int index);
@@ -43,6 +45,9 @@ public:
 
 	void clear_backgrounds();
 
+	void start_part_2();
+	[[nodiscard]] bool fade_in_candy_background();
+
 	static constexpr int world_width = 11;
 	static constexpr int world_height = 13;
 
@@ -54,6 +59,8 @@ private:
 	// Used to set icon on phone for part 2 micro game
 	bn::optional<bn::bg_palette_ptr> phone_icon_palette;
 
+	// ------------------
+	// Part 1
 	const bn::regular_bg_item* const* doorbell_frames;
 	int doorbell_first_index = 0;
 	int doorbell_position = 0;
@@ -68,11 +75,19 @@ private:
 	int intro_time = 0;
 	int intro_frame = 0;
 
+	// ------------------
+	// Part 2
+	int candy_type = 0;
+
+	// ------------------
+	// Animations
 	const bn::regular_bg_item* const* animation = nullptr;
 	int const* animation_data = nullptr;
 	int animation_frame = 0;
 	int animation_time = 0;
 
+	// ------------------
+	// Booleans
 	bool is_part_2;
 };
 
