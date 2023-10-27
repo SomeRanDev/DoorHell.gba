@@ -5,6 +5,7 @@
 #include "bn_bg_palette_ptr.h"
 #include "bn_color.h"
 #include "bn_core.h"
+// #include "bn_keypad.h"
 #include "bn_sound_items.h"
 
 #include "bn_bg_palette_items_dh_background_alt_palette.h"
@@ -177,6 +178,15 @@ bool camera::update_intro_part_1() {
 }
 
 bool camera::update_intro_part_2() {
+	// if(intro_frame == 20 && animation_time == 0) {
+	// 	if(bn::keypad::a_pressed()) {
+	// 		animation_time = 1;
+	// 		intro_time = 0;
+	// 	} else {
+	// 		return false;
+	// 	}
+	// }
+
 	if(intro_frame >= get_intro_frame_count()) {
 		return true;
 	}
