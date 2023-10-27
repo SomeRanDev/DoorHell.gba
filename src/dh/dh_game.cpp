@@ -17,7 +17,8 @@ game::game(int completed_games, const mj::game_data& data):
 	total_frames_value = play_bgm(completed_games, data);
 
 	if(is_part_2) {
-		cam.set_candy_type(data.random.get_int(12));
+		candy_type = data.random.get_int(12);
+		cam.set_candy_type(candy_type);
 	} else {
 		generate_tutorial_text("Ring the doorbell.", data);
 		setup_palette(completed_games);
@@ -143,9 +144,40 @@ void game::start_playing() {
 	state = Playing;
 
 	if(is_part_2) {
-		cam.clear_backgrounds();
-		cam.start_part_2();
-		generate_tutorial_text("Pick your favorite.", *current_data);
+		start_playing_part_2();
+	}
+}
+
+void game::start_playing_part_2() {
+	// Setup tutorial
+	generate_tutorial_text("Pick your favorite.", *current_data);
+
+	// Setup camera
+	cam.clear_backgrounds();
+	cam.start_part_2();
+
+	// Setup candy
+	generate_candy();
+
+	// Setup hand
+	cursor.start_intro();
+}
+
+void game::generate_candy() {
+	bn::random& random = current_data->random;
+
+	{
+		auto c = candy_objects.emplace_back();
+		c.set_candy_type(candy_type);
+		c.randomize_position(random);
+	}
+
+	auto len = random.get_int(20) + 4;
+	for(int i = 0; i < 12; i++) {
+		candy c;
+		c.randomize_type(random, candy_type);
+		c.randomize_unique_position(random, candy_objects);
+		candy_objects.push_back(bn::move(c));
 	}
 }
 
@@ -241,6 +273,34 @@ void game::update_movement() {
 
 void game::update_game_part_2() {
 	(void)cam.fade_in_candy_background();
+
+	bool a_pressed = false;
+	if(!cursor.is_actively_pressing()) {
+		cursor.update_movement();
+		if(bn::keypad::a_pressed()) {
+			cursor.press();
+			a_pressed = true;
+		}
+	}
+
+	if(a_pressed) {
+		auto x = cursor.x();
+		auto y = cursor.y();
+		candy* c = nullptr;
+		for(auto& co : candy_objects) {
+			if(co.check_press(x, y)) {
+				c = &co;
+				break;
+			}
+		}
+
+		if(c) BN_LOG(c);
+		else BN_LOG("test");
+		// do something....
+	}
+	
+
+	cursor.update();
 }
 
 DH_END_NAMESPACE

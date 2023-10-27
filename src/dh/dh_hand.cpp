@@ -25,9 +25,8 @@ hand::hand():
 	hand_sprite(bn::sprite_items::dh_hand.create_sprite(0, 0))
 {
 	hand_sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-
-	// hand_sprite.set_x(70);
-	// hand_sprite.set_y(50);
+	hand_sprite.set_visible(false);
+	hand_sprite.set_bg_priority(1);
 }
 
 void hand::add_x(bn::fixed x) {
@@ -106,7 +105,7 @@ void hand::update_movement() {
 		y /= sqrt2;
 	}
 
-	constexpr bn::fixed speed = 4;
+	constexpr bn::fixed speed = 2;
 
 	add_x(x * speed);
 	add_y(y * speed);

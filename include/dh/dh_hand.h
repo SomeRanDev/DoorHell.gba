@@ -11,6 +11,9 @@ class hand {
 public:
 	hand();
 
+	[[nodiscard]] inline bn::fixed x() const { return hand_sprite.x(); }
+	[[nodiscard]] inline bn::fixed y() const { return hand_sprite.y(); }
+
 	void add_x(bn::fixed x);
 	void add_y(bn::fixed y);
 

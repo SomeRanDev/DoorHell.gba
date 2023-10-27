@@ -9,6 +9,8 @@
 
 #include "dh_defines.h"
 #include "dh_camera.h"
+#include "dh_candy.h"
+#include "dh_hand.h"
 
 DH_START_NAMESPACE
 
@@ -72,6 +74,9 @@ private:
 
 	void start_playing();
 
+	void start_playing_part_2();
+	void generate_candy();
+
 	void update();
 
 	void update_intro();
@@ -100,6 +105,12 @@ private:
 	// CAMERA
 	camera cam;
 	int camera_move_cooldown = 0;
+
+	// -------------------------------------------
+	// PART 2
+	bn::vector<candy, 25> candy_objects;
+	hand cursor;
+	int candy_type = 0;
 
 	// -------------------------------------------
 	// MICRO GAME
