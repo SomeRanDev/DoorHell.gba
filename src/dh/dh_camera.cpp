@@ -28,6 +28,7 @@
 #include "animations/dh_window_bell_press.h"
 
 #include "animations/dh_part_2_intro.h"
+#include "animations/dh_part_2_intro_palettes.h"
 
 DH_START_NAMESPACE
 
@@ -41,7 +42,16 @@ camera::camera(bool _is_part_2):
 	foreground_bg(initial_foreground(_is_part_2)->create_bg(bg_x, bg_y)),
 	is_part_2(_is_part_2)
 {
-	foreground_bg.set_priority(2);
+	foreground_bg.set_priority(3);
+
+	if(_is_part_2) {
+		phone_icon_palette = animations::get_palette_from_icon(8).create_palette();
+
+		constexpr auto start = animations::dh_part_2_intro_phone_frames_start;
+		_overlay_bg = animations::dh_part_2_intro_phone_frames[start]->create_bg(bg_x, bg_y);
+		_overlay_bg->set_priority(2);
+		_overlay_bg->set_visible(false);
+	}
 }
 
 bn::regular_bg_item const* camera::initial_background(bool _is_part_2) const {
@@ -129,6 +139,7 @@ void camera::set_frame_index_part_1(int index) {
 }
 
 void camera::set_frame_index_part_2(int index) {
+	DH_UNUSED(index);
 	/*
 	auto fg_frame = animations::dh_part_2_intro_frames[index];
 	if(fg_frame != nullptr) {
@@ -178,6 +189,17 @@ bool camera::update_intro_part_2() {
 			foreground_bg.set_visible(true);
 		} else {
 			foreground_bg.set_visible(false);
+		}
+
+		if(_overlay_bg) {
+			auto item = animations::dh_part_2_intro_phone_frames[intro_frame];
+			if(item != nullptr) {
+				_overlay_bg->set_item(*item);
+				_overlay_bg->set_visible(true);
+				_overlay_bg->set_palette(phone_icon_palette.value());
+			} else if(_overlay_bg->visible()) {
+				_overlay_bg.reset();
+			}
 		}
 	} else if(intro_time == 4) {
 		intro_time = 0;
@@ -360,7 +382,7 @@ bool camera::animation_done() {
 void camera::clear_backgrounds() {
 	background_bg.set_visible(false);
 	foreground_bg.set_visible(false);
-	_overlay_bg.reset();
+	if(_overlay_bg) _overlay_bg.reset();
 }
 
 DH_END_NAMESPACE

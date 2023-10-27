@@ -41,7 +41,8 @@ void game::generate_tutorial_text(const mj::game_data& data) {
 	}
 }
 
-void game::setup_palette(int /* completed_games */) {
+void game::setup_palette(int completed_games) {
+	DH_UNUSED(completed_games);
 	if(progress == 2) {
 		cam.set_palette_type(1);
 	} else if(progress == 4) {

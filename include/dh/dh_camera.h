@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_regular_bg_ptr.h"
+#include "bn_bg_palette_ptr.h"
 #include "bn_optional.h"
 
 #include "dh_defines.h"
@@ -49,6 +50,9 @@ private:
 	bn::regular_bg_ptr background_bg;
 	bn::regular_bg_ptr foreground_bg;
 	bn::optional<bn::regular_bg_ptr> _overlay_bg;
+
+	// Used to set icon on phone for part 2 micro game
+	bn::optional<bn::bg_palette_ptr> phone_icon_palette;
 
 	const bn::regular_bg_item* const* doorbell_frames;
 	int doorbell_first_index = 0;

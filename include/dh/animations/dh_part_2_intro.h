@@ -88,6 +88,15 @@
 #include "bn_regular_bg_items_dh_part_2_intro_back_40.h"
 #include "bn_regular_bg_items_dh_part_2_intro_back_41.h"
 
+#include "bn_regular_bg_items_dh_part_2_intro_phone_15.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_16.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_17.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_18.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_19.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_20.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_21.h"
+#include "bn_regular_bg_items_dh_part_2_intro_phone_22.h"
+
 DH_START_ANIMATIONS_NAMESPACE
 
 // ---------------------------------------------------------------
@@ -118,6 +127,22 @@ constexpr bn::regular_bg_item const* dh_part_2_intro_back_frames[] = {
 	ITEM(11), ITEM(12), ITEM(13), ITEM(14), ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20),
 	ITEM(21), ITEM(22), ITEM(23), ITEM(24), ITEM(25), ITEM(26), ITEM(27), ITEM(28), ITEM(29), ITEM(30),
 	ITEM(31), ITEM(32), ITEM(33), ITEM(34), ITEM(35), ITEM(36), ITEM(37), ITEM(38), ITEM(39), ITEM(40), ITEM(41)
+};
+
+#undef ITEM
+
+// ---------------------------------------------------------------
+// PHONE
+
+#define ITEM(INDEX) &bn::regular_bg_items::dh_part_2_intro_phone_ ## INDEX
+
+constexpr int dh_part_2_intro_phone_frames_start = 14;
+
+constexpr bn::regular_bg_item const* dh_part_2_intro_phone_frames[] = {
+	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+	nullptr, nullptr, nullptr, nullptr, ITEM(15), ITEM(16), ITEM(17), ITEM(18), ITEM(19), ITEM(20),
+	ITEM(21), ITEM(22), nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
 };
 
 #undef ITEM
