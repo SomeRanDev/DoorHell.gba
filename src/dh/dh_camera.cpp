@@ -396,28 +396,29 @@ bool camera::animation_done() {
 }
 
 void camera::clear_backgrounds() {
-	background_bg.set_visible(false);
+	//background_bg.set_visible(false);
 	foreground_bg.set_visible(false);
 	if(_overlay_bg) _overlay_bg.reset();
 }
 
 void camera::start_part_2() {
-	background_bg.set_visible(true);
-	background_bg.set_item(bn::regular_bg_items::dh_candy_background);
+	// background_bg.set_visible(true);
+	// background_bg.set_item(bn::regular_bg_items::dh_candy_background);
 
-	phone_icon_palette = bn::bg_palette_ptr::create(bn::regular_bg_items::dh_candy_background.palette_item());
-	phone_icon_palette->set_fade_intensity(1.0);
+	// phone_icon_palette = bn::bg_palette_ptr::create(bn::regular_bg_items::dh_candy_background.palette_item());
+	// phone_icon_palette->set_fade_intensity(1.0);
 
-	background_bg.set_palette(phone_icon_palette.value());
+	// background_bg.set_palette(phone_icon_palette.value());
 }
 
 bool camera::fade_in_candy_background() {
-	auto value = phone_icon_palette->fade_intensity() - 0.04;
-	if(value < 0) {
-		value = 0;
-	}
-	phone_icon_palette->set_fade_intensity(value);
-	return value == 0;
+	// auto value = phone_icon_palette->fade_intensity() - 0.04;
+	// if(value < 0) {
+	// 	value = 0;
+	// }
+	// phone_icon_palette->set_fade_intensity(value);
+	// return value == 0;
+	return false;
 }
 
 DH_END_NAMESPACE
