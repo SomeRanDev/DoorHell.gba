@@ -20,6 +20,8 @@ public:
 	void set_position(bn::fixed x, bn::fixed y, bn::fixed rotation, bn::fixed scale);
 	[[nodiscard]] bool check_press(bn::fixed x, bn::fixed y);
 
+	void set_sprite_palette(const bn::sprite_palette_ptr& palette);
+
 	void randomize_type(bn::random& random, int taken);
 	void randomize_position(bn::random& random);
 	void randomize_unique_position(bn::random& random, const bn::ivector<candy>& existing_candy);

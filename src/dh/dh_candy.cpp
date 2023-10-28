@@ -37,16 +37,21 @@ void candy::set_position(bn::fixed x, bn::fixed y, bn::fixed rotation, bn::fixed
 	// candy_icon_sprite.set_scale(scale * 2.0);
 }
 
-bool candy::check_press(bn::fixed x, bn::fixed y) {
-	constexpr int size = 45;
+bool candy::check_press(bn::fixed test_x, bn::fixed test_y) {
+	// Radius of the candy hitbox
+	constexpr int size = 20;
 
-	bn::fixed xo = x - candy_sprite.x();
+	bn::fixed xo = test_x - candy_sprite.x() + (size / 2);
 	if(xo > size || xo < -size) return false;
 
-	bn::fixed yo = y - candy_sprite.y();
+	bn::fixed yo = test_y - candy_sprite.y() + (size / 2);
 	if(yo > size || yo < -size) return false;
 
 	return bn::sqrt(xo * xo + yo * yo) < size;
+}
+
+void candy::set_sprite_palette(const bn::sprite_palette_ptr& palette) {
+	candy_sprite.set_palette(palette);
 }
 
 void candy::randomize_type(bn::random& random, int taken) {

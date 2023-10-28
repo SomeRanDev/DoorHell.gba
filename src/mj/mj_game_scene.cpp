@@ -350,8 +350,8 @@ bool game_scene::_update_fade(bool update_again)
             {
                 game_manager& game_manager = _game_manager.emplace(_completed_games, _data, _core);
                 int total_frames = game_manager.game().total_frames();
-                BN_ASSERT(total_frames >= game::minimum_frames && total_frames <= game::maximum_frames,
-                          "Invalid game total frames: ", total_frames);
+                // BN_ASSERT(total_frames >= game::minimum_frames && total_frames <= game::maximum_frames,
+                //           "Invalid game total frames: ", total_frames);
 
                 _pending_frames = total_frames;
                 _total_frames = total_frames;

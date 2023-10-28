@@ -17,8 +17,7 @@ game::game(int completed_games, const mj::game_data& data):
 	total_frames_value = play_bgm(completed_games, data);
 
 	if(is_part_2) {
-		candy_type = data.random.get_int(12);
-		cam.set_candy_type(candy_type);
+		part_2.init(cam, data);
 	} else {
 		generate_tutorial_text("Ring the doorbell.", data);
 		setup_palette(completed_games);
@@ -40,8 +39,7 @@ void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 
 	// Record text offsets
 	auto mid = data.small_text_generator.width(msg) / -2;
-	auto len = text_sprites.size();
-	for(decltype(len) i = 0; i < len; i++) {
+	DH_FOR(text_sprites.size()) {
 		text_sprites[i].set_bg_priority(1); // show text above backgrounds
 		text_offsets.push_back(text_sprites[i].x() - x + mid);
 	}
@@ -144,40 +142,8 @@ void game::start_playing() {
 	state = Playing;
 
 	if(is_part_2) {
-		start_playing_part_2();
-	}
-}
-
-void game::start_playing_part_2() {
-	// Setup tutorial
-	generate_tutorial_text("Pick your favorite.", *current_data);
-
-	// Setup camera
-	cam.clear_backgrounds();
-	cam.start_part_2();
-
-	// Setup candy
-	generate_candy();
-
-	// Setup hand
-	cursor.start_intro();
-}
-
-void game::generate_candy() {
-	bn::random& random = current_data->random;
-
-	{
-		auto c = candy_objects.emplace_back();
-		c.set_candy_type(candy_type);
-		c.randomize_position(random);
-	}
-
-	auto len = random.get_int(20) + 4;
-	for(int i = 0; i < 12; i++) {
-		candy c;
-		c.randomize_type(random, candy_type);
-		c.randomize_unique_position(random, candy_objects);
-		candy_objects.push_back(bn::move(c));
+		generate_tutorial_text("Pick your favorite.", *current_data);
+		part_2.start_playing(cam, *current_data);
 	}
 }
 
@@ -185,9 +151,11 @@ void game::update() {
 	if(state == Intro) {
 		update_intro();
 	} else if(is_part_2) {
-		update_game_part_2();
+		part_2.update();
 	} else {
-		update_game();
+		if(part_1.update(cam, is_victory)) {
+			set_victory();
+		}
 	}
 
 	update_text();
@@ -204,8 +172,7 @@ void game::update_text() {
 		bool is_middle = text_ratio > 0.42 && text_ratio < 0.58;
 		text_ratio += is_middle ? 0.003 : 0.05;
 
-		auto len = text_sprites.size();
-		for(decltype(len) i = 0; i < len; i++) {
+		DH_FOR(text_sprites.size()) {
 			if(is_middle) {
 				text_sprites[i].set_x(text_sprites[i].x() + 1);
 			} else {
@@ -217,90 +184,6 @@ void game::update_text() {
 			text_sprites.clear();
 		}
 	}
-}
-
-void game::update_game() {
-	if(sleep > 0) {
-		sleep--;
-	} else if(cam.update_animation()) {
-		update_movement();
-	} else if(!is_victory && cam.animation_done()) {
-		cam.play_animation_done_sound_effect();
-		set_victory();
-	}
-}
-
-void game::update_movement() {
-	if(bn::keypad::a_pressed()) {
-		if(cam.on_a_press()) {
-			return;
-		} else {
-			bn::sound_items::dh_denied.play();
-			sleep = 16;
-			return;
-		}
-	}
-
-	int x = 0;
-	int y = 0;
-	
-	if(bn::keypad::left_held()) {
-		x = -1;
-	} else if(bn::keypad::right_held()) {
-		x = 1;
-	} else if(bn::keypad::up_held()) {
-		y = -1;
-	} else if(bn::keypad::down_held()) {
-		y = 1;
-	}
-
-	cam.restrict_movement(x, y);
-
-	static int last_move_type = -1;
-	int move_type = (y * 3) + x;
-
-	if(camera_move_cooldown > 0) {
-		if(last_move_type != move_type) {
-			camera_move_cooldown = 0;
-		} else {
-			camera_move_cooldown--;
-		}
-	} else if(cam.shift(x, y)) {
-		last_move_type = move_type;
-		camera_move_cooldown = 2;
-	}
-}
-
-void game::update_game_part_2() {
-	(void)cam.fade_in_candy_background();
-
-	bool a_pressed = false;
-	if(!cursor.is_actively_pressing()) {
-		cursor.update_movement();
-		if(bn::keypad::a_pressed()) {
-			cursor.press();
-			a_pressed = true;
-		}
-	}
-
-	if(a_pressed) {
-		auto x = cursor.x();
-		auto y = cursor.y();
-		candy* c = nullptr;
-		for(auto& co : candy_objects) {
-			if(co.check_press(x, y)) {
-				c = &co;
-				break;
-			}
-		}
-
-		if(c) BN_LOG(c);
-		else BN_LOG("test");
-		// do something....
-	}
-	
-
-	cursor.update();
 }
 
 DH_END_NAMESPACE

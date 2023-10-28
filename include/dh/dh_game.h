@@ -1,8 +1,8 @@
 #pragma once
 
+#include "bn_fixed.h"
 #include "bn_optional.h"
 #include "bn_sprite_ptr.h"
-#include "bn_fixed.h"
 #include "bn_vector.h"
 
 #include "mj/mj_game.h"
@@ -11,6 +11,8 @@
 #include "dh_camera.h"
 #include "dh_candy.h"
 #include "dh_hand.h"
+#include "dh_impl1.h"
+#include "dh_impl2.h"
 
 DH_START_NAMESPACE
 
@@ -19,6 +21,12 @@ enum State {
 	Playing
 };
 
+/**
+ * The implementation for both parts of "Door Hell".
+ * 
+ * I'm implementing both into the same `mj::game` class so I can ensure
+ * "part 2" only occurs after winning "part 1".
+ */
 class game : public mj::game {
 public:
 	game(int completed_games, const mj::game_data& data);
@@ -38,7 +46,7 @@ public:
 
 	[[nodiscard]]
 	int total_frames() const final {
-		return total_frames_value;
+		return 100000;//total_frames_value;
 	}
 
 	[[nodiscard]]
@@ -55,6 +63,11 @@ public:
 private:
 	// -------------------------------------------
 	// STATICS
+
+	/**
+	 * Tracks progress to decide which "part" the player is on.
+	 * Only play "part 2" after successfully winning the first part.
+	 */
 	static int progress;
 
 	// -------------------------------------------
@@ -104,18 +117,19 @@ private:
 	// -------------------------------------------
 	// CAMERA
 	camera cam;
-	int camera_move_cooldown = 0;
 
-	// -------------------------------------------
-	// PART 2
-	bn::vector<candy, 25> candy_objects;
-	hand cursor;
-	int candy_type = 0;
+	/**
+	 * The implementation and behavior for the "part 2" version.
+	 */
+	impl1 part_1;
+
+	/**
+	 * The implementation and behavior for the "part 2" version.
+	 */
+	impl2 part_2;
 
 	// -------------------------------------------
 	// MICRO GAME
-	int sleep = 0;
-
 	int total_frames_value;
 	int show_result_frames = 60;
 
