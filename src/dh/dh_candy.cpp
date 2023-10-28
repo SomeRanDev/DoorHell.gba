@@ -12,7 +12,33 @@ candy::candy():
 	candy_sprite(bn::sprite_items::dh_candy.create_sprite(0, 0)),
 	candy_icon_sprite(bn::sprite_items::dh_candy_icon.create_sprite(0, 0))
 {
-	candy_icon_sprite.set_scale(2);
+	candy_icon_sprite.put_above();
+}
+
+void candy::set_x(bn::fixed v) {
+	candy_sprite.set_x(v);
+	candy_icon_sprite.set_x(v);
+}
+
+void candy::set_y(bn::fixed v) {
+	candy_sprite.set_y(v);
+	candy_icon_sprite.set_y(v);
+}
+
+void candy::set_rotation(bn::fixed v) {
+	candy_sprite.set_tiles(bn::sprite_items::dh_candy.tiles_item(), ((v / 180.0) * 9.0).floor_integer() % 9);
+	candy_icon_sprite.set_rotation_angle(v.floor_integer() % 360);
+}
+
+void candy::set_scale(bn::fixed v) {
+	candy_sprite.set_scale(v);
+	candy_icon_sprite.set_scale(v);
+}
+
+void candy::move_to_top() {
+	candy_sprite.set_bg_priority(1);
+	candy_icon_sprite.set_bg_priority(1);
+	candy_icon_sprite.put_above();
 }
 
 void candy::set_candy_type(int type) {
@@ -22,17 +48,16 @@ void candy::set_candy_type(int type) {
 void candy::set_position(bn::fixed x, bn::fixed y, bn::fixed rotation, bn::fixed scale) {
 	DH_UNUSED(scale);
 
+	set_x(x);
+	set_y(y);
+
 	// ---------
 	// Wrapper
-	candy_sprite.set_x(x);
-	candy_sprite.set_y(y);
 	candy_sprite.set_tiles(bn::sprite_items::dh_candy.tiles_item(), ((rotation / 180.0) * 9.0).floor_integer() % 9);
 	// candy_sprite.set_scale(scale);
 
 	// ---------
 	// Icon
-	candy_icon_sprite.set_x(x);
-	candy_icon_sprite.set_y(y);
 	candy_icon_sprite.set_rotation_angle(rotation);
 	// candy_icon_sprite.set_scale(scale * 2.0);
 }

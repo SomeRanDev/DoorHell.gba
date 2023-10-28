@@ -29,17 +29,39 @@ public:
 
 	void update();
 	void update_hovered_candy();
-	void update_a_press();
+	[[nodiscard]] bool update_a_press();
+
+	void init_candy_display_animation();
+	void update_candy_display_animation();
 
 private:
-	bn::vector<candy, 25> candy_objects;
+	/**
+	 * Stores all the `candy` objects.
+	 */
+	bn::vector<candy, 20> candy_objects;
 
+	// -------------------------------------------
+	// PALETTES
 	bn::optional<bn::sprite_palette_ptr> unselected_palette;
 	bn::optional<bn::sprite_palette_ptr> selected_palette;
 
+	// -------------------------------------------
+	// HAND CURSOR
 	hand cursor;
 	candy* hovered_candy = nullptr;
+
+	// -------------------------------------------
+	// DISPLAY CANDY ANIMATION
+	bn::fixed animation_time = 0;
+	bn::fixed start_x = 0;
+	bn::fixed start_y = 0;
+	bn::fixed start_rotation = 0;
+
+	// -------------------------------------------
+	// DATA
 	int candy_type = 0;
+
+	bool is_displaying_candy = false;
 };
 
 DH_END_NAMESPACE

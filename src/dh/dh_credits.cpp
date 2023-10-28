@@ -2,8 +2,7 @@
 
 #include "mj/mj_game_list.h"
 
-namespace
-{
+namespace {
     constexpr bn::string_view code_credits[] = { "SomeRanDev (Robert Borghese)" };
     constexpr bn::string_view graphics_credits[] = { "SomeRanDev (Robert Borghese)" };
 	constexpr bn::string_view sfx_credits[] = { "SomeRanDev (Robert Borghese)", "Amada44" };

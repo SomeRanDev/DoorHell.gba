@@ -62,9 +62,17 @@ void impl2::generate_candy(const mj::game_data& data) {
 }
 
 void impl2::update() {
-	update_hovered_candy();
-	update_a_press();
-	cursor.update();
+	if(is_displaying_candy) {
+		update_candy_display_animation();
+	} else {
+		update_hovered_candy();
+		if(update_a_press()) {
+			init_candy_display_animation();
+			cursor.set_visible(false);
+		} else {
+			cursor.update();
+		}
+	}
 }
 
 void impl2::update_hovered_candy() {
@@ -89,16 +97,45 @@ void impl2::update_hovered_candy() {
 	}
 }
 
-void impl2::update_a_press() {
+bool impl2::update_a_press() {
 	if(!cursor.is_actively_pressing()) {
 		cursor.update_movement();
 		if(bn::keypad::a_pressed()) {
 			cursor.press();
 			if(hovered_candy != nullptr) {
-				// TODO: do something with hovered_candy
+				return true;
 			}
 		}
 	}
+	return false;
+}
+
+void impl2::init_candy_display_animation() {
+	is_displaying_candy = true;
+
+	hovered_candy->move_to_top();
+
+	animation_time = 0;
+	start_x = hovered_candy->x();
+	start_y = hovered_candy->y();
+	start_rotation = hovered_candy->rotation();
+
+	// If it's not going to spin that much, let's make it SPINNNNNN
+	if(start_rotation < 180) start_rotation += 360;
+}
+
+void impl2::update_candy_display_animation() {
+	if(animation_time < 1.0) {
+		animation_time += 0.02;
+		if(animation_time > 1.0) animation_time = 1.0;
+	}
+
+	auto r = (animation_time - 1) * (animation_time - 1) * (animation_time - 1) + bn::fixed(1.0);
+
+	hovered_candy->set_x(start_x + (-start_x * r));
+	hovered_candy->set_y(start_y + (-start_y * r));
+	hovered_candy->set_rotation(start_rotation + (-start_rotation * r));
+	hovered_candy->set_scale(1.0 + r);
 }
 
 DH_END_NAMESPACE

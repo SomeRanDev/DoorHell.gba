@@ -14,6 +14,8 @@ public:
 	[[nodiscard]] inline bn::fixed x() const { return hand_sprite.x() - 21; }
 	[[nodiscard]] inline bn::fixed y() const { return hand_sprite.y() - 21; }
 
+	inline void set_visible(bool v) { hand_sprite.set_visible(v); }
+
 	void add_x(bn::fixed x);
 	void add_y(bn::fixed y);
 

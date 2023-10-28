@@ -15,6 +15,13 @@ public:
 
 	[[nodiscard]] inline bn::fixed x() const { return candy_sprite.x(); }
 	[[nodiscard]] inline bn::fixed y() const { return candy_sprite.y(); }
+	[[nodiscard]] inline bn::fixed rotation() const { return candy_icon_sprite.rotation_angle(); }
+
+	void set_x(bn::fixed v);
+	void set_y(bn::fixed v);
+	void set_rotation(bn::fixed v);
+	void set_scale(bn::fixed v);
+	void move_to_top();
 
 	void set_candy_type(int type);
 	void set_position(bn::fixed x, bn::fixed y, bn::fixed rotation, bn::fixed scale);
