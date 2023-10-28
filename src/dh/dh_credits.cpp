@@ -3,9 +3,11 @@
 #include "mj/mj_game_list.h"
 
 namespace {
-    constexpr bn::string_view code_credits[] = { "SomeRanDev (Robert Borghese)" };
-    constexpr bn::string_view graphics_credits[] = { "SomeRanDev (Robert Borghese)" };
-	constexpr bn::string_view sfx_credits[] = { "SomeRanDev (Robert Borghese)", "Amada44" };
+	constexpr const char* me = "SomeRanDev (Robert Borghese)";
+
+    constexpr bn::string_view code_credits[] = { me };
+    constexpr bn::string_view graphics_credits[] = { me };
+	constexpr bn::string_view sfx_credits[] = { me, "Amada44" };
 }
 
 // Add it twice since it contains two micro games (if this is not allowed, feel free to delete!)
