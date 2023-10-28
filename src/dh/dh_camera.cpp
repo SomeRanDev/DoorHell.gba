@@ -5,7 +5,6 @@
 #include "bn_bg_palette_ptr.h"
 #include "bn_color.h"
 #include "bn_core.h"
-// #include "bn_keypad.h"
 #include "bn_sound_items.h"
 
 #include "bn_bg_palette_items_dh_background_alt_palette.h"
@@ -147,17 +146,6 @@ void camera::set_frame_index_part_1(int index) {
 
 void camera::set_frame_index_part_2(int index) {
 	DH_UNUSED(index);
-	/*
-	auto fg_frame = animations::dh_part_2_intro_frames[index];
-	if(fg_frame != nullptr) {
-		foreground_bg.set_item(*fg_frame);
-		foreground_bg.set_visible(true);
-	} else {
-		foreground_bg.set_visible(false);
-	}
-
-	background_bg.set_item(*animations::dh_part_2_intro_back_frames[index]);
-	*/
 }
 
 int camera::get_intro_frame_count() const {
@@ -395,30 +383,9 @@ bool camera::animation_done() {
 	return animation_frame >= animation_data[0];
 }
 
-void camera::clear_backgrounds() {
-	//background_bg.set_visible(false);
+void camera::clear_foregrounds() {
 	foreground_bg.set_visible(false);
 	if(_overlay_bg) _overlay_bg.reset();
-}
-
-void camera::start_part_2() {
-	// background_bg.set_visible(true);
-	// background_bg.set_item(bn::regular_bg_items::dh_candy_background);
-
-	// phone_icon_palette = bn::bg_palette_ptr::create(bn::regular_bg_items::dh_candy_background.palette_item());
-	// phone_icon_palette->set_fade_intensity(1.0);
-
-	// background_bg.set_palette(phone_icon_palette.value());
-}
-
-bool camera::fade_in_candy_background() {
-	// auto value = phone_icon_palette->fade_intensity() - 0.04;
-	// if(value < 0) {
-	// 	value = 0;
-	// }
-	// phone_icon_palette->set_fade_intensity(value);
-	// return value == 0;
-	return false;
 }
 
 DH_END_NAMESPACE

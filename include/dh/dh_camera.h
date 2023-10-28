@@ -43,10 +43,7 @@ public:
 
 	void play_animation_done_sound_effect();
 
-	void clear_backgrounds();
-
-	void start_part_2();
-	[[nodiscard]] bool fade_in_candy_background();
+	void clear_foregrounds();
 
 	static constexpr int world_width = 11;
 	static constexpr int world_height = 13;

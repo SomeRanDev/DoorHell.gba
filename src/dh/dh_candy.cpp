@@ -97,15 +97,13 @@ void candy::randomize_position(bn::random& random) {
 }
 
 void candy::randomize_unique_position(bn::random& random, const bn::ivector<candy>& existing_candy) {
-	// Allow overlaps every 10 pieces added...
-	//int overlaps_allowed = existing_candy.size() / 7;
-
 	while(true) {
 		randomize_position(random);
 
 		bool overlaps = false;
 
-		int start = bn::max(0, existing_candy.size() - 5);
+		// Make sure no overlap with past 6 pieces
+		int start = bn::max(0, existing_candy.size() - 6);
 		int end = existing_candy.size();
 		for(int i = start; i < end; i++) {
 			const candy& c = existing_candy[i];

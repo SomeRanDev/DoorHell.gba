@@ -17,7 +17,6 @@ void impl2::init(camera& cam, const mj::game_data& data) {
 void impl2::start_playing(camera& cam, const mj::game_data& data) {
 	// Setup camera
 	cam.clear_backgrounds();
-	cam.start_part_2();
 
 	// Setup candy
 	generate_palettes();
