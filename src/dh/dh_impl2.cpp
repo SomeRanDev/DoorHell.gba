@@ -4,14 +4,20 @@
 #include "bn_random.h"
 #include "bn_sprite_palette_item.h"
 
+#include "bn_sound_items.h"
+
+#include "animations/dh_part_2_intro_palettes.h"
+
 DH_START_NAMESPACE
 
 impl2::impl2() {
 }
 
 void impl2::init(camera& cam, const mj::game_data& data) {
-	candy_type = data.random.get_int(37);
+	candy_type = data.random.get_int(animations::max_icon_palette + 1);
 	cam.set_candy_type(candy_type);
+
+	bn::sound_items::dh_doorbell.play();
 }
 
 void impl2::start_playing(camera& cam, const mj::game_data& data) {
@@ -64,20 +70,39 @@ void impl2::generate_candy(const mj::game_data& data) {
 }
 
 int impl2::update() {
-	if(is_displaying_candy) {
+	if(cursor.is_actively_grabbing()) {
+
+		cursor.update();
+
+	} else if(is_displaying_candy) {
+
 		if(update_candy_display_animation()) {
 			return 3;
 		}
-	} else {
-		update_hovered_candy();
-		if(update_a_press()) {
-			init_candy_display_animation();
-			cursor.set_visible(false);
-			return hovered_candy->get_candy_type() == candy_type ? 1 : 2;
+
+	} else if(picked_result != 0) {
+
+		if(picked_result == 1) {
+			bn::sound_items::dh_success.play();
 		} else {
-			cursor.update();
+			bn::sound_items::dh_incorrect.play();
 		}
+
+		init_candy_display_animation();
+		// cursor.set_visible(false);
+		return picked_result;
+
+	} else {
+
+		cursor.update_movement();
+		update_hovered_candy();
+
+		if(update_a_press()) {
+			picked_result = hovered_candy->get_candy_type() == candy_type ? 1 : 2;
+		}
+		cursor.update();
 	}
+
 	return 0;
 }
 
@@ -104,14 +129,14 @@ void impl2::update_hovered_candy() {
 }
 
 bool impl2::update_a_press() {
-	if(!cursor.is_actively_pressing()) {
-		cursor.update_movement();
-		if(bn::keypad::a_pressed()) {
-			cursor.press();
-			if(hovered_candy != nullptr) {
-				return true;
-			}
+	if(bn::keypad::a_pressed()) {
+		cursor.grab();
+		bn::sound_items::dh_fall.play();
+		if(hovered_candy != nullptr) {
+			return true;
 		}
+	} else if(bn::keypad::b_pressed()) {
+		cursor.press();
 	}
 	return false;
 }

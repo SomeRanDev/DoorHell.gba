@@ -77,8 +77,8 @@ void impl1::update_movement(camera& cam) {
 
 	cam.restrict_movement(x, y);
 
-	static int last_move_type = -1;
 	int move_type = (y * 3) + x;
+	int old_y = cam.get_y();
 
 	if(camera_move_cooldown > 0) {
 		if(last_move_type != move_type) {
@@ -87,6 +87,14 @@ void impl1::update_movement(camera& cam) {
 			camera_move_cooldown--;
 		}
 	} else if(cam.shift(x, y)) {
+		if(old_y != 13 && old_y != cam.get_y()) {
+			if(footstep_cooldown == 0) {
+				bn::sound_items::dh_footstep.play();
+				footstep_cooldown = 3;
+			} else {
+				footstep_cooldown--;
+			}
+		}
 		last_move_type = move_type;
 		camera_move_cooldown = 2;
 	}

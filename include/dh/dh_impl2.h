@@ -71,6 +71,7 @@ private:
 	// -------------------------------------------
 	// DATA
 	int candy_type = 0;
+	int picked_result = 0;
 
 	bool is_displaying_candy = false;
 };

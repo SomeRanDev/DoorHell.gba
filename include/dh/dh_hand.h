@@ -22,6 +22,7 @@ public:
 	void update();
 	void update_normal();
 	void update_press();
+	void update_grab();
 
 	void update_movement();
 
@@ -33,12 +34,16 @@ public:
 	void press();
 	bool is_actively_pressing() const;
 
+	void grab();
+	bool is_actively_grabbing() const;
+
 	bn::sprite_ptr hand_sprite;
 
 	int time = 0;
 	int frame = 0;
 
 	int is_pressing = 0;
+	int is_grabbing = 0;
 
 	int move_camera_x = 0;
 	int move_camera_y = 0;

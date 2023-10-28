@@ -45,7 +45,7 @@ void candy::move_to_top() {
 }
 
 void candy::set_candy_type(int type) {
-	if(type < 0 || type >= animations::max_icon_palette) {
+	if(type < 0 || type > animations::max_icon_palette) {
 		type = 0;
 	}
 
@@ -90,7 +90,7 @@ void candy::set_sprite_palette(const bn::sprite_palette_ptr& palette) {
 void candy::randomize_type(bn::random& random, int taken) {
 	int type;
 	do {
-		type = random.get_int(37);
+		type = random.get_int(animations::max_icon_palette + 1);
 	} while(type == taken);
 
 	set_candy_type(type);

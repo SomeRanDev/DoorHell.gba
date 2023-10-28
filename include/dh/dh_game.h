@@ -32,9 +32,7 @@ public:
 	game(int completed_games, const mj::game_data& data);
 
 	[[nodiscard]]
-	bool check_if_part_2() const {
-		return progress % 2 == 1;
-	}
+	bool check_if_part_2(int completed_games);
 
 	[[nodiscard]]
 	bn::string<16> title() const final {
@@ -69,6 +67,12 @@ private:
 	 * Only play "part 2" after successfully winning the first part.
 	 */
 	static int progress;
+
+	/**
+	 * Tracks the number of completed games since the last game.
+	 * If this is greater, that means this is a different run.
+	 */
+	static int stored_completed_games;
 
 	// -------------------------------------------
 	// FUNCTIONS

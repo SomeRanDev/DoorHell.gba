@@ -30,6 +30,8 @@ public:
 private:
 	int sleep = 0;
 	int camera_move_cooldown = 0;
+	int footstep_cooldown = 0;
+	int last_move_type = -1;
 };
 
 DH_END_NAMESPACE

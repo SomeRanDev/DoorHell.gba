@@ -8,11 +8,12 @@
 DH_START_NAMESPACE
 
 int game::progress = 0;
+int game::stored_completed_games = 0;
 
 game::game(int completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
-	cam(check_if_part_2()),
-	is_part_2(check_if_part_2())
+	cam(check_if_part_2(completed_games)),
+	is_part_2(cam.get_is_part_2()) // Weird C++ hack?? Doesn't stay assigned from `check_if_part_2`.
 {
 	total_frames_value = play_bgm(completed_games, data);
 
@@ -24,6 +25,17 @@ game::game(int completed_games, const mj::game_data& data):
 	}
 }
 
+bool game::check_if_part_2(int completed_games) {
+	// Reset progress if this is new run...
+	if(stored_completed_games > completed_games) {
+		progress = 0;
+	}
+	stored_completed_games = completed_games;
+
+	// Check if this is an "odd" run.
+	return progress % 2 == 1;
+}
+
 int game::play_bgm(int completed_games, const mj::game_data& data) {
 	auto jingle = is_part_2 ? mj::game_jingle_type::TOTSNUK16 : (
 		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
@@ -33,7 +45,6 @@ int game::play_bgm(int completed_games, const mj::game_data& data) {
 
 void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	// Show tutorial text
-	//auto msg = "Ring the doorbell.";
 	auto x = 260;
 	data.small_text_generator.generate(x, 5, msg, text_sprites);
 
@@ -63,7 +74,10 @@ mj::game_result game::play(const mj::game_data& data) {
 	}
 
 	mj::game_result result;
-	result.exit = data.pending_frames == 0;
+
+	if(data.pending_frames == 0) {
+		result.exit = true;
+	}
 
 	if(!is_victory && !is_defeat) {
 		set_current_references(result, data);
@@ -126,6 +140,7 @@ void game::set_defeat() {
 		current_result->remove_title = true;
 	}
 	is_defeat = true;
+	progress = 0;
 }
 
 void game::start_playing() {

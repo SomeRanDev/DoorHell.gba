@@ -12,6 +12,10 @@ class camera {
 public:
 	camera(bool is_part_2);
 
+	[[nodiscard]] inline int get_x() const { return x; }
+	[[nodiscard]] inline int get_y() const { return y; }
+	[[nodiscard]] inline int get_is_part_2() const { return is_part_2; }
+
 	[[nodiscard]] bn::regular_bg_item const* initial_background(bool _is_part_2) const;
 	[[nodiscard]] bn::regular_bg_item const* initial_foreground(bool _is_part_2) const;
 	void create_foreground(bool _is_part_2);
@@ -49,8 +53,8 @@ public:
 	static constexpr int world_height = 13;
 
 private:
-	bn::regular_bg_ptr background_bg;
-	bn::regular_bg_ptr foreground_bg;
+	bn::optional<bn::regular_bg_ptr> background_bg;
+	bn::optional<bn::regular_bg_ptr> foreground_bg;
 	bn::optional<bn::regular_bg_ptr> _overlay_bg;
 
 	// Used to set icon on phone for part 2 micro game

@@ -46,6 +46,8 @@ void hand::update() {
 		update_intro();
 	} else if(is_actively_pressing()) {
 		update_press();
+	} else if(is_actively_grabbing()) {
+		update_grab();
 	} else {
 		update_normal();
 	}
@@ -78,6 +80,18 @@ void hand::update_press() {
 		}
 	}
 	set_frame(frame);
+}
+
+void hand::update_grab() {
+	if(time++ > 2) {
+		time = 0;
+		if(is_grabbing < 6) {
+			is_grabbing++;
+			set_frame((is_grabbing - 2) + 5);
+		} else {
+			is_grabbing = 0;
+		}
+	}
 }
 
 void hand::update_movement() {
@@ -155,6 +169,14 @@ void hand::press() {
 
 bool hand::is_actively_pressing() const {
 	return is_pressing > 0;
+}
+
+void hand::grab() {
+	is_grabbing = 1;
+}
+
+bool hand::is_actively_grabbing() const {
+	return is_grabbing > 0;
 }
 
 DH_END_NAMESPACE

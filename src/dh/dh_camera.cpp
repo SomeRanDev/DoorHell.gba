@@ -44,7 +44,7 @@ camera::camera(bool _is_part_2):
 	foreground_bg(initial_foreground(_is_part_2)->create_bg(bg_x, bg_y)),
 	is_part_2(_is_part_2)
 {
-	foreground_bg.set_priority(3);
+	foreground_bg->set_priority(3);
 }
 
 bn::regular_bg_item const* camera::initial_background(bool _is_part_2) const {
@@ -134,13 +134,13 @@ void camera::set_frame_index_part_1(int index) {
 		}
 	}
 
-	foreground_bg.set_item(*frames[index]);
-	background_bg.set_item(*background_frames[index]);
+	foreground_bg->set_item(*frames[index]);
+	background_bg->set_item(*background_frames[index]);
 
 	if(palette_type == 1) {
-		foreground_bg.set_palette(bn::bg_palette_items::dh_foreground_alt_palette);
+		foreground_bg->set_palette(bn::bg_palette_items::dh_foreground_alt_palette);
 	} else if(palette_type == 2) {
-		background_bg.set_palette(bn::bg_palette_items::dh_background_alt_palette);
+		background_bg->set_palette(bn::bg_palette_items::dh_background_alt_palette);
 	}
 }
 
@@ -187,12 +187,14 @@ bool camera::update_intro_part_2() {
 
 	intro_time++;
 	if(intro_time == 2) {
-		auto fg_frame = animations::dh_part_2_intro_frames[intro_frame];
-		if(fg_frame != nullptr) {
-			foreground_bg.set_item(*fg_frame);
-			foreground_bg.set_visible(true);
-		} else {
-			foreground_bg.set_visible(false);
+		if(foreground_bg) {
+			auto fg_frame = animations::dh_part_2_intro_frames[intro_frame];
+			if(fg_frame != nullptr) {
+				foreground_bg->set_item(*fg_frame);
+				foreground_bg->set_visible(true);
+			} else {
+				foreground_bg->set_visible(false);
+			}
 		}
 
 		if(_overlay_bg) {
@@ -207,7 +209,14 @@ bool camera::update_intro_part_2() {
 		}
 	} else if(intro_time == 4) {
 		intro_time = 0;
-		background_bg.set_item(*animations::dh_part_2_intro_back_frames[intro_frame]);
+		background_bg->set_item(*animations::dh_part_2_intro_back_frames[intro_frame]);
+
+		if(intro_frame == 16) {
+			bn::sound_items::dh_door_open.play();
+		} else if(intro_frame == 18) {
+			bn::sound_items::dh_wood_squeak.play();
+		}
+
 		intro_frame++;
 	}
 
@@ -353,6 +362,12 @@ bool camera::update_animation() {
 			}
 
 			if(!animation_done() && _overlay_bg) {
+				// For pumpkin bell press, let's remove the other backgrounds...
+				if(animation_frame == 0 && animation == animations::dh_pumpkin_bell_press_frames) {
+					background_bg.reset();
+					foreground_bg.reset();
+				}
+
 				_overlay_bg->set_item(*animation[animation_frame]);
 				_overlay_bg->set_visible(true);
 
@@ -384,7 +399,7 @@ bool camera::animation_done() {
 }
 
 void camera::clear_foregrounds() {
-	foreground_bg.set_visible(false);
+	if(foreground_bg) foreground_bg.reset();
 	if(_overlay_bg) _overlay_bg.reset();
 }
 
