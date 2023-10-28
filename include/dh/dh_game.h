@@ -76,7 +76,7 @@ private:
 	void generate_tutorial_text(const char* msg, const mj::game_data& data);
 	void setup_palette(int completed_games);
 
-	void init(const mj::game_data& data);
+	void on_first_update(const mj::game_data& data);
 	int generate_unique_random_position(const mj::game_data& data) const;
 
 	void set_current_references(mj::game_result& result, const mj::game_data& data);

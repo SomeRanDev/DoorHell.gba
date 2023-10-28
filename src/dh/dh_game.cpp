@@ -20,7 +20,7 @@ game::game(int completed_games, const mj::game_data& data):
 		part_2.init(cam, data);
 	} else {
 		generate_tutorial_text("Ring the doorbell.", data);
-		setup_palette(completed_games);
+		part_1.setup_palette(cam, completed_games, progress);
 	}
 }
 
@@ -45,40 +45,10 @@ void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	}
 }
 
-void game::setup_palette(int completed_games) {
-	DH_UNUSED(completed_games);
-	if(progress == 2) {
-		cam.set_palette_type(1);
-	} else if(progress == 4) {
-		cam.set_palette_type(2);
-		progress = 0;
+void game::on_first_update(const mj::game_data& data) {
+	if(!is_part_2) {
+		part_1.on_first_update(cam, data);
 	}
-}
-
-void game::init(const mj::game_data& data) {
-	cam.set_doorbell_position(generate_unique_random_position(data));
-}
-
-int game::generate_unique_random_position(const mj::game_data& data) const {
-	// Ensure previous four positions not used
-	static int previous = 0;
-
-	// There's probably better way to do this... but... uh.... it's a game jam game bro gimme a break lmao
-	int position;
-	do {
-		position = data.random.get_int(6) + 1; // Add one so zero doesn't count
-	} while(
-		position == (previous & 0xf) ||
-		position == ((previous >> 4) & 0xf) ||
-		position == ((previous >> 8) & 0xf) ||
-		position == ((previous >> 12) & 0xf)
-	);
-
-	// Add result to "previous" variable
-	previous <<= 4;
-	previous |= position;
-
-	return position - 1; // Remove one since positions start from zero
 }
 
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
@@ -92,7 +62,7 @@ void game::fade_out([[maybe_unused]] const mj::game_data& data) {
 mj::game_result game::play(const mj::game_data& data) {
 	if(!is_initialized) {
 		is_initialized = true;
-		init(data);
+		on_first_update(data);
 	}
 
 	mj::game_result result;
