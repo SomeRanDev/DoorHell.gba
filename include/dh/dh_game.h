@@ -33,7 +33,7 @@ public:
 
 	[[nodiscard]]
 	bool check_if_part_2() const {
-		return true;//progress % 2 == 1;
+		return progress % 2 == 1;
 	}
 
 	[[nodiscard]]
@@ -46,7 +46,7 @@ public:
 
 	[[nodiscard]]
 	int total_frames() const final {
-		return 100000;//total_frames_value;
+		return total_frames_value;
 	}
 
 	[[nodiscard]]
@@ -77,6 +77,10 @@ private:
 	void setup_palette(int completed_games);
 
 	void on_first_update(const mj::game_data& data);
+
+	void update_exit(mj::game_result& result);
+	void update_exit_preresult();
+
 	int generate_unique_random_position(const mj::game_data& data) const;
 
 	void set_current_references(mj::game_result& result, const mj::game_data& data);
@@ -131,7 +135,7 @@ private:
 	// -------------------------------------------
 	// MICRO GAME
 	int total_frames_value;
-	int show_result_frames = 60;
+	int show_result_frames = -1;
 
 	bool is_victory = false;
 	bool is_defeat = false;

@@ -16,6 +16,7 @@ public:
 	[[nodiscard]] inline bn::fixed x() const { return candy_sprite.x(); }
 	[[nodiscard]] inline bn::fixed y() const { return candy_sprite.y(); }
 	[[nodiscard]] inline bn::fixed rotation() const { return candy_icon_sprite.rotation_angle(); }
+	[[nodiscard]] inline int get_candy_type() const { return candy_type; }
 
 	void set_x(bn::fixed v);
 	void set_y(bn::fixed v);
@@ -38,10 +39,12 @@ public:
 	constexpr static int tiles_width = 10;
 	constexpr static int tiles_height = 5;
 
+private:
 	bn::sprite_ptr candy_sprite;
 	bn::sprite_ptr candy_icon_sprite;
 
-	int position_index;
+	int candy_type = -1;
+	int position_index = 0;
 };
 
 DH_END_NAMESPACE

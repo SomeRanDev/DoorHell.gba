@@ -1,5 +1,5 @@
 /**
-	cls && deno run --allow-read --allow-write generate_palette.ts Icon1.png
+	cls && deno run --allow-read --allow-write generate_palette.ts
 **/
 
 import { decode } from "https://deno.land/x/pngs/mod.ts";
@@ -11,9 +11,9 @@ const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
 
 const icons: string[] = [];
 const switchCases: string[] = [];
-for(let i = 1; i <= 11; i++) {
+for(let i = 1; i <= 36; i++) {
 	icons.push(await getIconColors(i));
-	switchCases.push(`case ${i}: return icon_${i};`);
+	switchCases.push(`case ${i - 1}: return icon_${i};`);
 }
 
 switchCases.push(`default: return icon_1;`);
@@ -30,6 +30,8 @@ await Deno.writeTextFile(`${__dirname}/../../include/dh/animations/dh_part_2_int
 DH_START_ANIMATIONS_NAMESPACE
 
 ${icons.join("\n\n")}
+
+constexpr int max_icon_palette = ${icons.length - 1};
 
 constexpr bn::color const* get_icon(int index) {
 	switch(index) {

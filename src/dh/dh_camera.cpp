@@ -101,7 +101,7 @@ void camera::set_doorbell_position(int pos) {
 }
 
 void camera::set_candy_type(int type) {
-	if(type < 0 || type > 11) {
+	if(type < 0 || type > animations::max_icon_palette) {
 		type = 0;
 	}
 

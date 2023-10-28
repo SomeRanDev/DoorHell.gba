@@ -48,7 +48,7 @@ bool impl1::update(camera& cam, bool is_victory) {
 	if(sleep > 0) {
 		sleep--;
 	} else if(cam.update_animation()) {
-		update_movement(cam);
+		update_controls(cam);
 	} else if(!is_victory && cam.animation_done()) {
 		cam.play_animation_done_sound_effect();
 		return true;

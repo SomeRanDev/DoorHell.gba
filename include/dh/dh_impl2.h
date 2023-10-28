@@ -27,12 +27,22 @@ public:
 	void generate_palettes();
 	void generate_candy(const mj::game_data& data);
 
-	void update();
+	/**
+	 * Updates the part 2 game.
+	 * 
+	 * The returned value controls the parent game:
+	 * 0 - do nothing
+	 * 1 - set to victory
+	 * 2 - set to defeat
+	 * 3 - exit micro game
+	 */
+	[[nodiscard]] int update();
+
 	void update_hovered_candy();
 	[[nodiscard]] bool update_a_press();
 
 	void init_candy_display_animation();
-	void update_candy_display_animation();
+	[[nodiscard]] bool update_candy_display_animation();
 
 private:
 	/**
@@ -44,6 +54,7 @@ private:
 	// PALETTES
 	bn::optional<bn::sprite_palette_ptr> unselected_palette;
 	bn::optional<bn::sprite_palette_ptr> selected_palette;
+	bn::optional<bn::sprite_palette_ptr> display_palette;
 
 	// -------------------------------------------
 	// HAND CURSOR

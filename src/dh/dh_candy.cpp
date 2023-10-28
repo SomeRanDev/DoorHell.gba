@@ -1,10 +1,12 @@
 #include "dh_candy.h"
 
 #include "bn_math.h"
-#include "bn_math.h"
+#include "bn_sprite_double_size_mode.h"
 
 #include "bn_sprite_items_dh_candy.h"
 #include "bn_sprite_items_dh_candy_icon.h"
+
+#include "animations/dh_part_2_intro_palettes.h"
 
 DH_START_NAMESPACE
 
@@ -13,16 +15,17 @@ candy::candy():
 	candy_icon_sprite(bn::sprite_items::dh_candy_icon.create_sprite(0, 0))
 {
 	candy_icon_sprite.put_above();
+	candy_icon_sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
 }
 
 void candy::set_x(bn::fixed v) {
 	candy_sprite.set_x(v);
-	candy_icon_sprite.set_x(v);
+	candy_icon_sprite.set_x(v - 2);
 }
 
 void candy::set_y(bn::fixed v) {
 	candy_sprite.set_y(v);
-	candy_icon_sprite.set_y(v);
+	candy_icon_sprite.set_y(v - 2);
 }
 
 void candy::set_rotation(bn::fixed v) {
@@ -42,7 +45,12 @@ void candy::move_to_top() {
 }
 
 void candy::set_candy_type(int type) {
-	candy_icon_sprite.set_tiles(bn::sprite_items::dh_candy_icon.tiles_item(), type);
+	if(type < 0 || type >= animations::max_icon_palette) {
+		type = 0;
+	}
+
+	candy_type = type;
+	candy_icon_sprite.set_tiles(bn::sprite_items::dh_candy_icon.tiles_item(), candy_type);
 }
 
 void candy::set_position(bn::fixed x, bn::fixed y, bn::fixed rotation, bn::fixed scale) {
@@ -82,7 +90,7 @@ void candy::set_sprite_palette(const bn::sprite_palette_ptr& palette) {
 void candy::randomize_type(bn::random& random, int taken) {
 	int type;
 	do {
-		type = random.get_int(11);
+		type = random.get_int(37);
 	} while(type == taken);
 
 	set_candy_type(type);

@@ -45,18 +45,15 @@ void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	}
 }
 
-void game::on_first_update(const mj::game_data& data) {
-	if(!is_part_2) {
-		part_1.on_first_update(cam, data);
-	}
-}
-
 void game::fade_in([[maybe_unused]] const mj::game_data& data) {
 	update_intro();
 	update_text();
 }
 
 void game::fade_out([[maybe_unused]] const mj::game_data& data) {
+	if(is_part_2) {
+		update();
+	}
 }
 
 mj::game_result game::play(const mj::game_data& data) {
@@ -73,14 +70,37 @@ mj::game_result game::play(const mj::game_data& data) {
 		update();
 		reset_current_references();
 	} else {
-		if(show_result_frames) {
-			show_result_frames--;
-		} else {
-			result.exit = true;
-		}
+		update_exit(result);
 	}
 
 	return result;
+}
+
+void game::on_first_update(const mj::game_data& data) {
+	if(!is_part_2) {
+		part_1.on_first_update(cam, data);
+	}
+}
+
+void game::update_exit(mj::game_result& result) {
+	if(show_result_frames == -1) {
+		update_exit_preresult();
+	} else if(show_result_frames) {
+		show_result_frames--;
+	} else {
+		result.exit = true;
+	}
+}
+
+void game::update_exit_preresult() {
+	if(is_part_2) {
+		if(part_2.update() == 3) {
+			show_result_frames = 15;
+		}
+		update_text();
+	} else {
+		show_result_frames = 45;
+	}
 }
 
 void game::set_current_references(mj::game_result& result, const mj::game_data& data) {
@@ -121,7 +141,17 @@ void game::update() {
 	if(state == Intro) {
 		update_intro();
 	} else if(is_part_2) {
-		part_2.update();
+		switch(part_2.update()) {
+			case 1: {
+				set_victory();
+				break;
+			}
+			case 2: {
+				set_defeat();
+				break;
+			}
+			default: {}
+		}
 	} else {
 		if(part_1.update(cam, is_victory)) {
 			set_victory();
