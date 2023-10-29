@@ -49,6 +49,9 @@ public:
 
 	void clear_foregrounds();
 
+	void show_overlay();
+	void hide_overlay();
+
 	static constexpr int world_width = 11;
 	static constexpr int world_height = 13;
 
@@ -90,6 +93,8 @@ private:
 	// ------------------
 	// Booleans
 	bool is_part_2;
+
+	bool overlay_was_shown = false;
 };
 
 DH_END_NAMESPACE

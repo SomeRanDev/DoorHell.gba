@@ -28,6 +28,7 @@ public:
 	void set_y(bn::fixed v);
 	void set_rotation(bn::fixed v);
 	void set_scale(bn::fixed v);
+	void set_visible(bool show);
 	void move_to_top();
 
 	void set_candy_type(int type);

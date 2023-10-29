@@ -28,6 +28,9 @@ public:
 	void update_movement(camera& cam);
 	void update_a_pressed(camera& cam);
 
+	void on_pause_start(camera& cam);
+	void on_pause_end(camera& cam);
+
 private:
 	int sleep = 0;
 

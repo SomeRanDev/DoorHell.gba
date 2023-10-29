@@ -213,4 +213,16 @@ bool impl2::update_candy_display_animation() {
 	return r == 1.0;
 }
 
+void impl2::on_pause_start() {
+	for(auto& c : candy_objects) {
+		c.set_visible(false);
+	}
+}
+
+void impl2::on_pause_end() {
+	for(auto& c : candy_objects) {
+		c.set_visible(true);
+	}
+}
+
 DH_END_NAMESPACE

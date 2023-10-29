@@ -38,6 +38,11 @@ void candy::set_scale(bn::fixed v) {
 	candy_icon_sprite.set_scale(v);
 }
 
+void candy::set_visible(bool show) {
+	candy_sprite.set_visible(show);
+	candy_icon_sprite.set_visible(show);
+}
+
 void candy::move_to_top() {
 	candy_sprite.set_bg_priority(1);
 	candy_icon_sprite.set_bg_priority(1);

@@ -403,4 +403,19 @@ void camera::clear_foregrounds() {
 	if(_overlay_bg) _overlay_bg.reset();
 }
 
+void camera::show_overlay() {
+	if(overlay_was_shown) {
+		_overlay_bg->set_visible(true);
+	}
+}
+
+void camera::hide_overlay() {
+	if(_overlay_bg && _overlay_bg->visible()) {
+		overlay_was_shown = true;
+		_overlay_bg->set_visible(false);
+	} else {
+		overlay_was_shown = false;
+	}
+}
+
 DH_END_NAMESPACE

@@ -136,4 +136,12 @@ void impl1::update_a_pressed(camera& cam) {
 	}
 }
 
+void impl1::on_pause_start(camera& cam) {
+	cam.hide_overlay();
+}
+
+void impl1::on_pause_end(camera& cam) {
+	cam.show_overlay();
+}
+
 DH_END_NAMESPACE

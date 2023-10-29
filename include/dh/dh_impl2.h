@@ -44,6 +44,9 @@ public:
 	void init_candy_display_animation();
 	[[nodiscard]] bool update_candy_display_animation();
 
+	void on_pause_start();
+	void on_pause_end();
+
 private:
 	/**
 	 * Stores all the `candy` objects.
