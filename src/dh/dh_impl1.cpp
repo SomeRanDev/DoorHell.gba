@@ -112,7 +112,7 @@ void impl1::update_movement(camera& cam) {
 		if(old_y != 13 && old_y != cam.get_y()) {
 			if(footstep_cooldown == 0) {
 				// Make varied footstep volume
-				bn::sound_items::dh_footstep.play(bn::fixed(6 - (footstep_type++)) / 10.0);
+				bn::sound_items::dh_footstep.play(bn::fixed(8 - (footstep_type++)) / 10.0);
 				if(footstep_type == 3) footstep_type = 0;
 				footstep_cooldown = 4;
 			} else {
