@@ -6,6 +6,7 @@
 #include "bn_vector.h"
 
 #include "mj/mj_game.h"
+#include "mj/mj_difficulty_level.h"
 
 #include "dh_defines.h"
 #include "dh_camera.h"
@@ -29,10 +30,10 @@ enum State {
  */
 class game : public mj::game {
 public:
-	game(int completed_games, const mj::game_data& data);
+	game(int _completed_games, const mj::game_data& data);
 
 	[[nodiscard]]
-	bool check_if_part_2(int completed_games);
+	bool check_if_part_2(int _completed_games);
 
 	[[nodiscard]]
 	bn::string<16> title() const final {
@@ -76,7 +77,7 @@ private:
 
 	// -------------------------------------------
 	// FUNCTIONS
-	int play_bgm(int completed_games, const mj::game_data& data);
+	int play_bgm(const mj::game_data& data);
 	void generate_tutorial_text(const char* msg, const mj::game_data& data);
 	void setup_palette(int completed_games);
 
@@ -138,6 +139,9 @@ private:
 
 	// -------------------------------------------
 	// MICRO GAME
+	mj::difficulty_level level;
+	int completed_games;
+
 	int total_frames_value;
 	int show_result_frames = -1;
 

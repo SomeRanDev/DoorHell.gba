@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mj/mj_game.h"
+#include "mj/mj_difficulty_level.h"
 
 #include "dh_defines.h"
 #include "dh_camera.h"
@@ -16,10 +17,10 @@ class impl1 {
 public:
 	impl1();
 
-	void setup_palette(camera& cam, int completed_games, int progress);
+	void setup_palette(camera& cam, int progress);
 
-	void on_first_update(camera& cam, const mj::game_data& data);
-	int generate_unique_random_position(const mj::game_data& data) const;
+	void on_first_update(camera& cam, mj::difficulty_level level, const mj::game_data& data);
+	int generate_unique_random_position(mj::difficulty_level level, const mj::game_data& data) const;
 
 	[[nodiscard]] bool update(camera& cam, bool is_victory);
 	void update_controls(camera& cam);
@@ -29,9 +30,12 @@ public:
 
 private:
 	int sleep = 0;
+
 	int camera_move_cooldown = 0;
 	int footstep_cooldown = 0;
+
 	int last_move_type = -1;
+	int footstep_type = 0;
 };
 
 DH_END_NAMESPACE

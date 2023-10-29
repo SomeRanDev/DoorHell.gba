@@ -9,6 +9,12 @@
 
 DH_START_NAMESPACE
 
+enum allow_type_similarity : uint8_t {
+	PREVENT,
+	ALLOW,
+	FORCE
+};
+
 class candy {
 public:
 	candy();
@@ -30,7 +36,7 @@ public:
 
 	void set_sprite_palette(const bn::sprite_palette_ptr& palette);
 
-	void randomize_type(bn::random& random, int taken);
+	void randomize_type(bn::random& random, int taken, allow_type_similarity similarity_type);
 	void randomize_position(bn::random& random);
 	void randomize_unique_position(bn::random& random, const bn::ivector<candy>& existing_candy);
 

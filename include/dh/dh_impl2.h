@@ -23,9 +23,9 @@ public:
 	impl2();
 
 	void init(camera& cam, const mj::game_data& data);
-	void start_playing(camera& cam, const mj::game_data& data);
+	void start_playing(camera& cam, mj::difficulty_level level, int completed_games, const mj::game_data& data);
 	void generate_palettes();
-	void generate_candy(const mj::game_data& data);
+	void generate_candy(mj::difficulty_level level, int completed_games, const mj::game_data& data);
 
 	/**
 	 * Updates the part 2 game.

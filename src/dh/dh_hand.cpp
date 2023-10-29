@@ -119,7 +119,7 @@ void hand::update_movement() {
 		y /= sqrt2;
 	}
 
-	constexpr bn::fixed speed = 2;
+	constexpr bn::fixed speed = 3;
 
 	add_x(x * speed);
 	add_y(y * speed);

@@ -20,13 +20,13 @@ void impl2::init(camera& cam, const mj::game_data& data) {
 	bn::sound_items::dh_doorbell.play();
 }
 
-void impl2::start_playing(camera& cam, const mj::game_data& data) {
+void impl2::start_playing(camera& cam, mj::difficulty_level level, int completed_games, const mj::game_data& data) {
 	// Setup camera
 	cam.clear_foregrounds();
 
 	// Setup candy
 	generate_palettes();
-	generate_candy(data);
+	generate_candy(level, completed_games, data);
 
 	// Setup hand
 	cursor.start_intro();
@@ -49,7 +49,7 @@ void impl2::generate_palettes() {
 	display_palette = bn::sprite_palette_item(unselected_palette_colors, bn::bpp_mode::BPP_4).create_new_palette();
 }
 
-void impl2::generate_candy(const mj::game_data& data) {
+void impl2::generate_candy(mj::difficulty_level level, int completed_games, const mj::game_data& data) {
 	bn::random& random = data.random;
 
 	{
@@ -59,10 +59,49 @@ void impl2::generate_candy(const mj::game_data& data) {
 		candy_objects.push_back(bn::move(c));
 	}
 
+	constexpr int super_hard_threshold = 9 * 4;
+
+	int candy_count = 12;//1;
+	allow_type_similarity type_similarity = allow_type_similarity::PREVENT;
+	
+	int level_number = static_cast<int>(level);
+	if(completed_games > super_hard_threshold) {
+		level_number = 4;
+	}
+
+	switch(level_number) {
+		case 0: { //easy
+			candy_count = 2 + random.get_int(4);
+			break;
+		}
+		case 1: { // normal
+			candy_count = 6 + random.get_int(4);
+			type_similarity = allow_type_similarity::ALLOW;
+			break;
+		}
+		case 2: { // hard
+			if(random.get_int(2) == 0) {
+				candy_count = 4 + random.get_int(2);
+				type_similarity = allow_type_similarity::FORCE;
+			} else {
+				candy_count = 10 + random.get_int(2);
+				type_similarity = allow_type_similarity::ALLOW;
+			}
+			break;
+		}
+		case 4: {
+			candy_count = 8 + random.get_int(4);
+			type_similarity = allow_type_similarity::FORCE;
+			break;
+		}
+		default: {
+		}
+	}
+
 	// auto len = random.get_int(20) + 4;
-	DH_FOR(3) {//10) {
+	DH_FOR(candy_count - 1) {
 		candy c;
-		c.randomize_type(random, candy_type);
+		c.randomize_type(random, candy_type, type_similarity);
 		c.randomize_unique_position(random, candy_objects);
 		c.set_sprite_palette(unselected_palette.value());
 		candy_objects.push_back(bn::move(c));
@@ -83,9 +122,9 @@ int impl2::update() {
 	} else if(picked_result != 0) {
 
 		if(picked_result == 1) {
-			bn::sound_items::dh_success.play();
+			bn::sound_items::dh_success.play(0.9);
 		} else {
-			bn::sound_items::dh_incorrect.play();
+			bn::sound_items::dh_incorrect.play(0.9);
 		}
 
 		init_candy_display_animation();

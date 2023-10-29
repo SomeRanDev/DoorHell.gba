@@ -87,13 +87,40 @@ void candy::set_sprite_palette(const bn::sprite_palette_ptr& palette) {
 	candy_sprite.set_palette(palette);
 }
 
-void candy::randomize_type(bn::random& random, int taken) {
-	int type;
-	do {
-		type = random.get_int(animations::max_icon_palette + 1);
-	} while(type == taken);
+void candy::randomize_type(bn::random& random, int taken, allow_type_similarity similarity_type) {
+	int base_taken_type = taken / 3;
+	int result_type;
 
-	set_candy_type(type);
+	BN_LOG(taken, base_taken_type);
+
+	switch(similarity_type) {
+		case allow_type_similarity::PREVENT: {
+			do {
+				result_type = random.get_int(animations::max_icon_palette + 1);
+			} while((result_type / 3) == base_taken_type);
+			break;
+		}
+		case allow_type_similarity::ALLOW: {
+			do {
+				result_type = random.get_int(animations::max_icon_palette + 1);
+			} while(result_type == taken);
+			break;
+		}
+		case allow_type_similarity::FORCE: {
+			int relative_taken_type = taken % 3;
+			int relative_result;
+			do {
+				relative_result = random.get_int(3);
+			} while(relative_result == relative_taken_type);
+			result_type = (base_taken_type * 3) + relative_result;
+			break;
+		}
+		default: {
+			result_type = taken == 0 ? 3 : 0;
+		}
+	}
+
+	set_candy_type(result_type);
 }
 
 void candy::randomize_position(bn::random& random) {

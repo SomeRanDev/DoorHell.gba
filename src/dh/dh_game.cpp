@@ -10,35 +10,37 @@ DH_START_NAMESPACE
 int game::progress = 0;
 int game::stored_completed_games = 0;
 
-game::game(int completed_games, const mj::game_data& data):
+game::game(int _completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // set to negative number to delay appearance
 	cam(check_if_part_2(completed_games)),
+	level(recommended_difficulty_level(completed_games, data)),
+	completed_games(_completed_games + 20),
 	is_part_2(cam.get_is_part_2()) // Weird C++ hack?? Doesn't stay assigned from `check_if_part_2`.
 {
-	total_frames_value = play_bgm(completed_games, data);
+	total_frames_value = play_bgm(data);
 
 	if(is_part_2) {
 		part_2.init(cam, data);
 	} else {
 		generate_tutorial_text("Ring the doorbell.", data);
-		part_1.setup_palette(cam, completed_games, progress);
+		part_1.setup_palette(cam, progress);
 	}
 }
 
-bool game::check_if_part_2(int completed_games) {
+bool game::check_if_part_2(int _completed_games) {
 	// Reset progress if this is new run...
-	if(stored_completed_games > completed_games) {
+	if(stored_completed_games > _completed_games) {
 		progress = 0;
 	}
-	stored_completed_games = completed_games;
+	stored_completed_games = _completed_games;
 
 	// Check if this is an "odd" run.
 	return progress % 2 == 1;
 }
 
-int game::play_bgm(int completed_games, const mj::game_data& data) {
+int game::play_bgm(const mj::game_data& data) {
 	auto jingle = is_part_2 ? mj::game_jingle_type::TOTSNUK16 : (
-		completed_games >= 8 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
+		(completed_games >= 24 || progress >= 6) ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
 	);
 	return play_jingle(jingle, completed_games, data);
 }
@@ -92,7 +94,7 @@ mj::game_result game::play(const mj::game_data& data) {
 
 void game::on_first_update(const mj::game_data& data) {
 	if(!is_part_2) {
-		part_1.on_first_update(cam, data);
+		part_1.on_first_update(cam, level, data);
 	}
 }
 
@@ -148,7 +150,7 @@ void game::start_playing() {
 
 	if(is_part_2) {
 		generate_tutorial_text("Pick your favorite.", *current_data);
-		part_2.start_playing(cam, *current_data);
+		part_2.start_playing(cam, level, completed_games, *current_data);
 	}
 }
 

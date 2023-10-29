@@ -8,29 +8,51 @@ DH_START_NAMESPACE
 impl1::impl1() {
 }
 
-void impl1::setup_palette(camera& cam, int completed_games, int progress) {
-	DH_UNUSED(completed_games);
-	if(progress == 2) {
+void impl1::setup_palette(camera& cam, int progress) {
+	auto p = progress % 6;
+	if(p == 2) {
 		cam.set_palette_type(1);
-	} else if(progress == 4) {
+	} else if(p == 4) {
 		cam.set_palette_type(2);
-		progress = 0;
 	}
 }
 
-void impl1::on_first_update(camera& cam, const mj::game_data& data) {
-	cam.set_doorbell_position(generate_unique_random_position(data));
+void impl1::on_first_update(camera& cam, mj::difficulty_level level, const mj::game_data& data) {
+	int position = 0;
+
+	switch(level) {
+		// Place doorbell in only 3 spots for easy mode...
+		case mj::difficulty_level::EASY: {
+			position = data.random.get_int(3);
+			if(position == 2) position = 5;
+			break;
+		}
+
+		// Place doorbell anywhere (except pumpkin for normal)...
+		default: {
+			position = generate_unique_random_position(level, data);
+			break;
+		}
+	}
+
+	cam.set_doorbell_position(position);
 }
 
-int impl1::generate_unique_random_position(const mj::game_data& data) const {
+int impl1::generate_unique_random_position(mj::difficulty_level level, const mj::game_data& data) const {
 	// Ensure previous four positions not used
 	static int previous = 0;
+
+	// If "previous" fills up in normal mode, let's clear it.
+	if(level == mj::difficulty_level::NORMAL && ((previous >> 12) & 0xf) != 0) {
+		previous = 0;
+	}
 
 	// There's probably better way to do this... but... uh.... it's a game jam game bro gimme a break lmao
 	int position;
 	do {
 		position = data.random.get_int(6) + 1; // Add one so zero doesn't count
 	} while(
+		(level == mj::difficulty_level::NORMAL && position == (4 + 1)) || // Prevent pumpkin bell in normal
 		position == (previous & 0xf) ||
 		position == ((previous >> 4) & 0xf) ||
 		position == ((previous >> 8) & 0xf) ||
@@ -89,8 +111,10 @@ void impl1::update_movement(camera& cam) {
 	} else if(cam.shift(x, y)) {
 		if(old_y != 13 && old_y != cam.get_y()) {
 			if(footstep_cooldown == 0) {
-				bn::sound_items::dh_footstep.play();
-				footstep_cooldown = 3;
+				// Make varied footstep volume
+				bn::sound_items::dh_footstep.play(bn::fixed(6 - (footstep_type++)) / 10.0);
+				if(footstep_type == 3) footstep_type = 0;
+				footstep_cooldown = 4;
 			} else {
 				footstep_cooldown--;
 			}
