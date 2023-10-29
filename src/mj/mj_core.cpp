@@ -2,7 +2,6 @@
 
 #include "bn_core.h"
 #include "bn_keypad.h"
-#include "bn_timers.h"
 #include "bn_version.h"
 
 #include "mj/mj_big_sprite_font.h"
@@ -10,7 +9,9 @@
 #include "mj/mj_small_sprite_font.h"
 #include "mj/mj_sprite_font.h"
 
-#include "bn_log.h"
+#if MJ_VBLANK_ASSERT_ENABLED
+    #include "bn_timers.h"
+#endif
 
 namespace mj
 {
@@ -22,7 +23,7 @@ namespace
         return (version_major << 16) + (version_minor << 8) + patch;
     }
 
-    static_assert(version(BN_VERSION_MAJOR, BN_VERSION_MINOR, BN_VERSION_PATCH) >= version(15, 8, 2),
+    static_assert(version(BN_VERSION_MAJOR, BN_VERSION_MINOR, BN_VERSION_PATCH) >= version(16, 0, 0),
                   "Butano version is too old");
 }
 
