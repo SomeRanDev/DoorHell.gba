@@ -79,6 +79,9 @@ mj::game_result game::play(const mj::game_data& data) {
 	mj::game_result result;
 
 	if(data.pending_frames == 0) {
+		if(!is_victory) {
+			progress = 0; // Ran out of time = failure. Reset progress...
+		}
 		result.exit = true;
 	}
 
