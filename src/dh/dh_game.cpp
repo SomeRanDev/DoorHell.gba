@@ -25,6 +25,8 @@ game::game(int _completed_games, const mj::game_data& data):
 		generate_tutorial_text("Ring the doorbell.", data);
 		part_1.setup_palette(cam, progress);
 	}
+
+	// controls_sprite.emplace(is_part_2);
 }
 
 bool game::check_if_part_2(int _completed_games) {

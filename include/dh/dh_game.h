@@ -11,6 +11,7 @@
 #include "dh_defines.h"
 #include "dh_camera.h"
 #include "dh_candy.h"
+#include "dh_controls.h"
 #include "dh_hand.h"
 #include "dh_impl1.h"
 #include "dh_impl2.h"
@@ -126,6 +127,10 @@ private:
 	// -------------------------------------------
 	// CAMERA
 	camera cam;
+
+	// -------------------------------------------
+	// CONTROLS
+	bn::optional<controls> controls_sprite;
 
 	/**
 	 * The implementation and behavior for the "part 2" version.
