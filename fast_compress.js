@@ -1,6 +1,10 @@
 /**
-	node fast_compress.js graphics/dh/close_bell
-	node fast_compress.js graphics/dh/dh_part_2_intro true bpp_8
+ * 	Quickly add/remove `"compress": "auto"` from graphics .json files in directory.
+ * 
+ * node fast_compress.js <directory> <make_not_compressed = false> <bpp_mode = bpp_4>
+ * 
+ * node fast_compress.js graphics/dh/close_bell
+ * node fast_compress.js graphics/dh/dh_part_2_intro true bpp_8
 **/
 
 const folder = process.argv[2];
@@ -27,13 +31,9 @@ if(fs.existsSync(folder)) {
 	fs.readdirSync(folder).forEach(function(file) {
 		if(file.endsWith(".json")) {
 			const data = fs.readFileSync(folder + "/" + file).toString();
-			//if(data.trim() === target) {
-				fs.writeFileSync(folder + "/" + file, `{
-	"type": "regular_bg",
-	"bpp_mode": "bpp_4",
-	"compression": "auto"
-}`);
-			//}
+			if(data.trim() === target) {
+				fs.writeFileSync(folder + "/" + file, result);
+			}
 		}
 	});
 } else {

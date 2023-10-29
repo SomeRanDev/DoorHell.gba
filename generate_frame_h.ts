@@ -22,7 +22,12 @@ while(existsSync(bmp_path(i))) {
 	i++;
 }
 
-const output = `#pragma once
+const output = `/**
+ * Generated from \`generate_frame_h.ts\`.
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/generate_frame_h.ts
+ */
+
+#pragma once
 
 #include "dh_defines.h"
 

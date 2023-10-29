@@ -1,3 +1,10 @@
+/**
+ * Generated from `blender/generate_animation.ts` script in DoorHell.gba repo.
+ * 
+ * Check out the script source code + Blender project files here:
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/blender/generate_animation.ts
+ */
+
 #pragma once
 
 #include "dh_defines.h"

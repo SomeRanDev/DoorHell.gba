@@ -1,3 +1,10 @@
+/**
+ * Generated from `blender/delete_empty_images.ts` script in DoorHell.gba repo.
+ * 
+ * Check out the script source code + Blender project files here:
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/blender/delete_empty_images.ts
+ */
+
 #pragma once
 
 #include "dh_defines.h"

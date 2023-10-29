@@ -1,3 +1,9 @@
+/**
+ * I think this file was manually generated?? So no script to link for this. Sorry </3
+ * 
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/LICENSE
+ */
+
 #pragma once
 
 #include "dh_defines.h"

@@ -18,7 +18,12 @@ for(let i = 1; i <= 36; i++) {
 
 switchCases.push(`default: return icon_1;`);
 
-await Deno.writeTextFile(`${__dirname}/../../include/dh/animations/dh_part_2_intro_palettes.h`, `#pragma once
+await Deno.writeTextFile(`${__dirname}/../../include/dh/animations/dh_part_2_intro_palettes.h`, `/**
+ * Generated from \`generate_palette.ts\`.
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/aseprite/CandyIcons/generate_palette.ts
+ */
+
+#pragma once
 
 #include "dh_defines.h"
 

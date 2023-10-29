@@ -1,3 +1,8 @@
+/**
+ * Generated from `generate_palette.ts`.
+ * https://github.com/SomeRanDev/DoorHell.gba/blob/main/aseprite/CandyIcons/generate_palette.ts
+ */
+
 #pragma once
 
 #include "dh_defines.h"
