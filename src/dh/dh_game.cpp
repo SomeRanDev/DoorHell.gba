@@ -14,7 +14,7 @@ game::game(int _completed_games, const mj::game_data& data):
 	text_ratio(-0.5), // Set to negative number to delay appearance
 	cam(check_if_part_2(completed_games)),
 	level(recommended_difficulty_level(completed_games, data)),
-	completed_games(_completed_games + 20),
+	completed_games(_completed_games),
 	is_part_2(cam.get_is_part_2()) // Weird C++ workaround. Doesn't stay if assigned from `check_if_part_2`.
 {
 	total_frames_value = play_bgm(data);
