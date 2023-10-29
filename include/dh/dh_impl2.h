@@ -2,7 +2,7 @@
 
 #include "bn_optional.h"
 #include "bn_sprite_palette_ptr.h"
-#include "bn_vector.h"
+#include "bn_deque.h"
 
 #include "mj/mj_game.h"
 
@@ -40,6 +40,10 @@ public:
 
 	void update_hovered_candy();
 	[[nodiscard]] bool update_a_press();
+	[[nodiscard]] bool update_b_press();
+
+	void grab_hovered_candy();
+	void push_down_hovered_candy();
 
 	void init_candy_display_animation();
 	[[nodiscard]] bool update_candy_display_animation();
@@ -51,7 +55,7 @@ private:
 	/**
 	 * Stores all the `candy` objects.
 	 */
-	bn::vector<candy, 20> candy_objects;
+	bn::deque<candy, 16> candy_objects;
 
 	// -------------------------------------------
 	// PALETTES
@@ -63,6 +67,7 @@ private:
 	// HAND CURSOR
 	hand cursor;
 	candy* hovered_candy = nullptr;
+	candy* pushing_candy = nullptr;
 
 	// -------------------------------------------
 	// DISPLAY CANDY ANIMATION

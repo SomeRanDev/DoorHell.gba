@@ -78,12 +78,14 @@ mj::game_result game::play(const mj::game_data& data) {
 
 	mj::game_result result;
 
-	if(data.pending_frames == 0) {
+	// This never hits 0, so closest we can get to handling "out of time" is 1.
+	if(data.pending_frames == 1) {
 		if(!is_victory) {
 			progress = 0; // Ran out of time = failure. Reset progress...
 		}
-		result.exit = true;
 	}
+
+	result.exit = data.pending_frames == 0;
 
 	if(!is_victory && !is_defeat) {
 		set_current_references(result, data);
@@ -155,6 +157,7 @@ void game::start_playing() {
 	if(is_part_2) {
 		generate_tutorial_text("Pick your favorite.", *current_data);
 		part_2.start_playing(cam, level, completed_games, *current_data);
+		controls_sprite.emplace(true, current_data->small_text_generator);
 	}
 }
 
@@ -214,7 +217,7 @@ void game::on_pause_start(const mj::game_data& data) {
 		part_2.on_pause_start();
 	} else {
 		part_1.on_pause_start(cam);
-		controls_sprite.emplace(false);
+		controls_sprite.emplace(false, current_data->small_text_generator);
 	}
 }
 

@@ -63,7 +63,7 @@ void hand::update_normal() {
 }
 
 void hand::update_press() {
-	if(time++ > 2) {
+	if(time++ >= 2) {
 		time = 0;
 
 		if(is_pressing == 1) {
@@ -83,7 +83,7 @@ void hand::update_press() {
 }
 
 void hand::update_grab() {
-	if(time++ > 2) {
+	if(time++ >= 2) {
 		time = 0;
 		if(is_grabbing < 6) {
 			is_grabbing++;
@@ -177,6 +177,10 @@ void hand::grab() {
 
 bool hand::is_actively_grabbing() const {
 	return is_grabbing > 0;
+}
+
+bn::fixed hand::get_push_ratio() const {
+	return bn::fixed(0.5) + ((bn::fixed(5 - frame) / 5.0) * bn::fixed(0.5));
 }
 
 DH_END_NAMESPACE

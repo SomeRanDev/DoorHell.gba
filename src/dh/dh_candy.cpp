@@ -49,6 +49,11 @@ void candy::move_to_top() {
 	candy_icon_sprite.put_above();
 }
 
+void candy::move_to_bottom() {
+	candy_icon_sprite.put_below();
+	candy_sprite.put_below();
+}
+
 void candy::set_candy_type(int type) {
 	if(type < 0 || type > animations::max_icon_palette) {
 		type = 0;
@@ -96,8 +101,6 @@ void candy::randomize_type(bn::random& random, int taken, allow_type_similarity 
 	int base_taken_type = taken / 3;
 	int result_type;
 
-	BN_LOG(taken, base_taken_type);
-
 	switch(similarity_type) {
 		case allow_type_similarity::PREVENT: {
 			do {
@@ -136,7 +139,7 @@ void candy::randomize_position(bn::random& random) {
 	// set_position(random.get_int(-100, 66), random.get_int(-12, 66), random.get_int(360), random.get_fixed(0.5) + 0.5);
 }
 
-void candy::randomize_unique_position(bn::random& random, const bn::ivector<candy>& existing_candy) {
+void candy::randomize_unique_position(bn::random& random, const bn::ideque<candy>& existing_candy) {
 	while(true) {
 		randomize_position(random);
 

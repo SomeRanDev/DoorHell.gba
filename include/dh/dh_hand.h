@@ -37,6 +37,9 @@ public:
 	void grab();
 	bool is_actively_grabbing() const;
 
+	bn::fixed get_push_ratio() const;
+
+private:
 	bn::sprite_ptr hand_sprite;
 
 	int time = 0;

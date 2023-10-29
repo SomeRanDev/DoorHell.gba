@@ -133,12 +133,26 @@ int impl2::update() {
 
 	} else {
 
-		cursor.update_movement();
 		update_hovered_candy();
 
-		if(update_a_press()) {
-			picked_result = hovered_candy->get_candy_type() == candy_type ? 1 : 2;
+		if(cursor.is_actively_pressing()) {
+			if(pushing_candy != nullptr) {
+				pushing_candy->set_scale(cursor.get_push_ratio());
+			}
+		} else if(!cursor.is_actively_grabbing()) {
+			cursor.update_movement();
+			if(update_a_press()) {
+				grab_hovered_candy();
+			} else if(update_b_press()) {
+				push_down_hovered_candy();
+			}
 		}
+
+		if(!cursor.is_actively_pressing() && pushing_candy != nullptr) {
+			pushing_candy->set_scale(1);
+			pushing_candy = nullptr;
+		}
+
 		cursor.update();
 	}
 
@@ -174,10 +188,49 @@ bool impl2::update_a_press() {
 		if(hovered_candy != nullptr) {
 			return true;
 		}
-	} else if(bn::keypad::b_pressed()) {
-		cursor.press();
 	}
 	return false;
+}
+
+void impl2::grab_hovered_candy() {
+	if(hovered_candy != nullptr) {
+		picked_result = hovered_candy->get_candy_type() == candy_type ? 1 : 2;
+	}
+}
+
+bool impl2::update_b_press() {
+	if(bn::keypad::b_pressed()) {
+		cursor.press();
+		if(hovered_candy != nullptr) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void impl2::push_down_hovered_candy() {
+	if(hovered_candy != nullptr) {
+		pushing_candy = hovered_candy;
+		
+		bn::sound_items::dh_fall.play();
+
+		auto it = candy_objects.begin();
+		auto end = candy_objects.end();
+		while(it != end) {
+			if(pushing_candy == &(*it)) {
+				break;
+			}
+			++it;
+		}
+
+		if(it != end) {
+			candy temp = (*pushing_candy);
+			candy_objects.erase(it);
+			candy_objects.push_front(temp);
+			temp.move_to_bottom();
+			pushing_candy = &candy_objects.front();
+		}
+	}
 }
 
 void impl2::init_candy_display_animation() {
