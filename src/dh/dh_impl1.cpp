@@ -10,11 +10,11 @@ impl1::impl1() {
 
 void impl1::setup_palette(camera& cam, const mj::game_data& data) {
 	// Prefer main palette; lesser chance to get secret alternative palettes.
-	auto p = data.random.get_int(10);
-	if(p == 1) {
-		cam.set_palette_type(1);
-	} else if(p == 2) {
+	auto p = data.random.get_int(15);
+	if(p == 14) {
 		cam.set_palette_type(2);
+	} else if(p >= 12) {
+		cam.set_palette_type(1);
 	}
 }
 
