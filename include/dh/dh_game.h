@@ -24,25 +24,15 @@ enum State {
 };
 
 /**
- * The implementation for both parts of "Door Hell".
- * 
- * I'm implementing both into the same `mj::game` class so I can ensure
- * "part 2" only occurs after winning "part 1".
+ * The base class for the implementation for both parts of "Door Hell".
  */
-class game : public mj::game {
+class base_game : public mj::game {
 public:
-	game(int _completed_games, const mj::game_data& data);
-
-	[[nodiscard]]
-	bool check_if_part_2(int _completed_games);
-
-	[[nodiscard]]
-	bn::string<16> title() const final {
-		if(is_part_2) {
-			return "Door Hell (Pt 2)";
-		}
-		return "Door Hell";
-	}
+	base_game(int _completed_games, const mj::game_data& data, bool is_part_2):
+		cam(is_part_2),
+		level(recommended_difficulty_level(completed_games, data)),
+		completed_games(_completed_games)
+	{}
 
 	[[nodiscard]]
 	int total_frames() const final {
@@ -55,40 +45,27 @@ public:
 	}
 
 	void fade_in(const mj::game_data& data) final;
-	void fade_out(const mj::game_data& data) final;
+	void fade_out(const mj::game_data& data);
 
 	[[nodiscard]]
 	mj::game_result play(const mj::game_data& data) final;
 
-	void on_pause_start(const mj::game_data& data) final;
-	void on_pause_end(const mj::game_data& data) final;
-
-private:
+protected:
 	// -------------------------------------------
-	// STATICS
+	// UNIMPLEMENTED
+	virtual int play_bgm(const mj::game_data& data) = 0;
+	virtual void update_exit_preresult() = 0;
+	virtual void update_game() = 0;
 
-	/**
-	 * Tracks progress to decide which "part" the player is on.
-	 * Only play "part 2" after successfully winning the first part.
-	 */
-	static int progress;
-
-	/**
-	 * Tracks the number of completed games since the last game.
-	 * If this is greater, that means this is a different run.
-	 */
-	static int stored_completed_games;
+	// -------------------------------------------
+	// VIRTUAL
+	virtual void on_first_update(const mj::game_data& data);
+	virtual void on_start_playing();
 
 	// -------------------------------------------
 	// FUNCTIONS
-	int play_bgm(const mj::game_data& data);
 	void generate_tutorial_text(const char* msg, const mj::game_data& data);
-	void setup_palette(int completed_games);
-
-	void on_first_update(const mj::game_data& data);
-
 	void update_exit(mj::game_result& result);
-	void update_exit_preresult();
 
 	int generate_unique_random_position(const mj::game_data& data) const;
 
@@ -99,24 +76,17 @@ private:
 	void set_defeat();
 
 	void start_playing();
-
-	void start_playing_part_2();
 	void generate_candy();
 
 	void update();
-
 	void update_intro();
 	void update_text();
-	void update_game();
-	void update_movement();
-
-	void update_game_part_2();
 
 	// -------------------------------------------
 	// TEXT SPRITES
 	bn::vector<bn::sprite_ptr, 5> text_sprites;
 	bn::vector<bn::fixed, 5> text_offsets;
-	bn::fixed text_ratio;
+	bn::fixed text_ratio = -0.5; // Set to negative number to delay appearance
 
 	// -------------------------------------------
 	// STATE
@@ -135,16 +105,6 @@ private:
 	// CONTROLS
 	bn::optional<controls> controls_sprite;
 
-	/**
-	 * The implementation and behavior for the "part 2" version.
-	 */
-	impl1 part_1;
-
-	/**
-	 * The implementation and behavior for the "part 2" version.
-	 */
-	impl2 part_2;
-
 	// -------------------------------------------
 	// MICRO GAME
 	mj::difficulty_level level;
@@ -157,7 +117,64 @@ private:
 	bool is_defeat = false;
 
 	bool is_initialized = false;
-	bool is_part_2 = false;
+};
+
+/**
+ * Part 1 of "Door Hell" (Ring the doorbell.)
+ */
+class game1 : public base_game {
+public:
+	game1(int _completed_games, const mj::game_data& data);
+
+	[[nodiscard]]
+	bn::string<16> title() const final {
+		return "Door Hell";
+	}
+
+	int play_bgm(const mj::game_data& data);
+
+	void on_first_update(const mj::game_data& data) final;
+	void update_exit_preresult() final;
+	void update_game() final;
+
+	void on_pause_start(const mj::game_data& data) final;
+	void on_pause_end(const mj::game_data& data) final;
+
+private:
+	/**
+	 * The implementation and behavior for the "part 1" version.
+	 */
+	impl1 part_1;
+};
+
+/**
+ * Part 2 of "Door Hell" (Pick your favorite candy.)
+ */
+class game2 : public base_game {
+public:
+	game2(int _completed_games, const mj::game_data& data);
+
+	[[nodiscard]]
+	bn::string<16> title() const final {
+		return "Door Hell 2";
+	}
+
+	int play_bgm(const mj::game_data& data);
+
+	void update_exit_preresult() final;
+	void on_start_playing() final;
+
+	void fade_out(const mj::game_data& data) final;
+	void update_game() final;
+
+	void on_pause_start(const mj::game_data& data) final;
+	void on_pause_end(const mj::game_data& data) final;
+
+private:
+	/**
+	 * The implementation and behavior for the "part 2" version.
+	 */
+	impl2 part_2;
 };
 
 DH_END_NAMESPACE

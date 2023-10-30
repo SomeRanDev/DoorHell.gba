@@ -7,46 +7,11 @@
 
 DH_START_NAMESPACE
 
-int game::progress = 0;
-int game::stored_completed_games = 0;
+// ========================================================================
+// * base_game
+// ========================================================================
 
-game::game(int _completed_games, const mj::game_data& data):
-	text_ratio(-0.5), // Set to negative number to delay appearance
-	cam(check_if_part_2(completed_games)),
-	level(recommended_difficulty_level(completed_games, data)),
-	completed_games(_completed_games),
-	is_part_2(cam.get_is_part_2()) // Weird C++ workaround. Doesn't stay if assigned from `check_if_part_2`.
-{
-	total_frames_value = play_bgm(data);
-
-	if(is_part_2) {
-		part_2.init(cam, data);
-	} else {
-		generate_tutorial_text("Ring the doorbell.", data);
-		part_1.setup_palette(cam, progress);
-	}
-}
-
-bool game::check_if_part_2(int _completed_games) {
-	// Reset progress if this is new run...
-	// TODO: request for better way to do this??
-	if(stored_completed_games > _completed_games) {
-		progress = 0;
-	}
-	stored_completed_games = _completed_games;
-
-	// Check if this is an "odd" run.
-	return progress % 2 == 1;
-}
-
-int game::play_bgm(const mj::game_data& data) {
-	auto jingle = is_part_2 ? mj::game_jingle_type::TOTSNUK16 : (
-		(completed_games >= 24 || progress >= 6) ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
-	);
-	return play_jingle(jingle, completed_games, data);
-}
-
-void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
+void base_game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	// Show tutorial text
 	auto x = 260;
 	data.small_text_generator.generate(x, 5, msg, text_sprites);
@@ -59,32 +24,24 @@ void game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	}
 }
 
-void game::fade_in([[maybe_unused]] const mj::game_data& data) {
+void base_game::on_first_update([[maybe_unused]] const mj::game_data& data) {
+}
+
+void base_game::fade_in([[maybe_unused]] const mj::game_data& data) {
 	update_intro();
 	update_text();
 }
 
-void game::fade_out([[maybe_unused]] const mj::game_data& data) {
-	if(is_part_2) {
-		update();
-	}
+void base_game::fade_out([[maybe_unused]] const mj::game_data& data) {
 }
 
-mj::game_result game::play(const mj::game_data& data) {
+mj::game_result base_game::play(const mj::game_data& data) {
 	if(!is_initialized) {
 		is_initialized = true;
 		on_first_update(data);
 	}
 
 	mj::game_result result;
-
-	// This never hits 0, so closest we can get to handling "out of time" is 1.
-	if(data.pending_frames == 1) {
-		if(!is_victory) {
-			progress = 0; // Ran out of time = failure. Reset progress...
-		}
-	}
-
 	result.exit = data.pending_frames == 0;
 
 	if(!is_victory && !is_defeat) {
@@ -98,13 +55,7 @@ mj::game_result game::play(const mj::game_data& data) {
 	return result;
 }
 
-void game::on_first_update(const mj::game_data& data) {
-	if(!is_part_2) {
-		part_1.on_first_update(cam, level, data);
-	}
-}
-
-void game::update_exit(mj::game_result& result) {
+void base_game::update_exit(mj::game_result& result) {
 	if(show_result_frames == -1) {
 		update_exit_preresult();
 	} else if(show_result_frames) {
@@ -114,84 +65,56 @@ void game::update_exit(mj::game_result& result) {
 	}
 }
 
-void game::update_exit_preresult() {
-	if(is_part_2) {
-		if(part_2.update() == 3) {
-			show_result_frames = 15;
-		}
-		update_text();
-	} else {
-		show_result_frames = 45;
-	}
-}
-
-void game::set_current_references(mj::game_result& result, const mj::game_data& data) {
+void base_game::set_current_references(mj::game_result& result, const mj::game_data& data) {
 	current_result = &result;
 	current_data = &data;
 }
 
-void game::reset_current_references() {
+void base_game::reset_current_references() {
 	current_result = nullptr;
 	current_data = nullptr;
 }
 
-void game::set_victory() {
+void base_game::set_victory() {
 	if(current_result) {
 		current_result->remove_title = true;
 	}
 	is_victory = true;
-	progress++;
 }
 
-void game::set_defeat() {
+void base_game::set_defeat() {
 	if(current_result) {
 		current_result->remove_title = true;
 	}
 	is_defeat = true;
-	progress = 0;
 }
 
-void game::start_playing() {
+void base_game::start_playing() {
 	state = Playing;
-
-	if(is_part_2) {
-		generate_tutorial_text("Pick your favorite.", *current_data);
-		part_2.start_playing(cam, level, completed_games, *current_data);
-		controls_sprite.emplace(true, current_data->small_text_generator);
-	}
+	on_start_playing();
 }
 
-void game::update() {
+void base_game::on_start_playing() {
+	// Possibly implemented in child classes...
+}
+
+void base_game::update() {
 	if(state == Intro) {
 		update_intro();
-	} else if(is_part_2) {
-		switch(part_2.update()) {
-			case 1: {
-				set_victory();
-				break;
-			}
-			case 2: {
-				set_defeat();
-				break;
-			}
-			default: {}
-		}
 	} else {
-		if(part_1.update(cam, is_victory)) {
-			set_victory();
-		}
+		update_game();
 	}
 
 	update_text();
 }
 
-void game::update_intro() {
+void base_game::update_intro() {
 	if(cam.update_intro()) {
 		start_playing();
 	}
 }
 
-void game::update_text() {
+void base_game::update_text() {
 	if(text_offsets.size() > 0 && text_ratio < 1.0) {
 		bool is_middle = text_ratio > 0.42 && text_ratio < 0.58;
 		text_ratio += is_middle ? 0.003 : 0.05;
@@ -210,26 +133,102 @@ void game::update_text() {
 	}
 }
 
-void game::on_pause_start(const mj::game_data& data) {
-	DH_UNUSED(data);
+// ========================================================================
+// * game1
+// ========================================================================
 
-	if(is_part_2) {
-		part_2.on_pause_start();
-	} else {
-		part_1.on_pause_start(cam);
-		controls_sprite.emplace(false, current_data->small_text_generator);
+game1::game1(int _completed_games, const mj::game_data& data):
+	base_game(_completed_games, data, false)
+{
+	total_frames_value = play_bgm(data);
+	generate_tutorial_text("Ring the doorbell.", data);
+	part_1.setup_palette(cam, data);
+}
+
+int game1::play_bgm(const mj::game_data& data) {
+	auto jingle = (
+		completed_games >= 24 ? mj::game_jingle_type::TOTSNUK05 : mj::game_jingle_type::TOTSNUK06
+	);
+	return play_jingle(jingle, completed_games, data);
+}
+
+void game1::on_first_update(const mj::game_data& data) {
+	part_1.on_first_update(cam, level, data);
+}
+
+void game1::update_exit_preresult() {
+	show_result_frames = 45;
+}
+
+void game1::update_game() {
+	if(part_1.update(cam, is_victory)) {
+		set_victory();
 	}
 }
 
-void game::on_pause_end(const mj::game_data& data) {
-	DH_UNUSED(data);
+void game1::on_pause_start([[maybe_unused]] const mj::game_data& data) {
+	part_1.on_pause_start(cam);
+	controls_sprite.emplace(false, current_data->small_text_generator);
+}
 
-	if(is_part_2) {
-		part_2.on_pause_end();
-	} else {
-		part_1.on_pause_end(cam);
-		controls_sprite.reset();
+void game1::on_pause_end([[maybe_unused]] const mj::game_data& data) {
+	part_1.on_pause_end(cam);
+	controls_sprite.reset();
+}
+
+// ========================================================================
+// * game2
+// ========================================================================
+
+game2::game2(int _completed_games, const mj::game_data& data):
+	base_game(_completed_games, data, true)
+{
+	total_frames_value = play_bgm(data);
+	part_2.init(cam, data);
+}
+
+int game2::play_bgm(const mj::game_data& data) {
+	auto jingle = mj::game_jingle_type::TOTSNUK16;
+	return play_jingle(jingle, completed_games, data);
+}
+
+void game2::update_exit_preresult() {
+	if(part_2.update() == 3) {
+		show_result_frames = 15;
 	}
+	update_text();
+}
+
+void game2::on_start_playing() {
+	generate_tutorial_text("Pick your favorite.", *current_data);
+	part_2.start_playing(cam, level, completed_games, *current_data);
+	controls_sprite.emplace(true, current_data->small_text_generator);
+}
+
+void game2::fade_out([[maybe_unused]] const mj::game_data& data) {
+	update();
+}
+
+void game2::update_game() {
+	switch(part_2.update()) {
+		case 1: {
+			set_victory();
+			break;
+		}
+		case 2: {
+			set_defeat();
+			break;
+		}
+		default: {}
+	}
+}
+
+void game2::on_pause_start([[maybe_unused]] const mj::game_data& data) {
+	part_2.on_pause_start();
+}
+
+void game2::on_pause_end([[maybe_unused]] const mj::game_data& data) {
+	part_2.on_pause_end();
 }
 
 DH_END_NAMESPACE

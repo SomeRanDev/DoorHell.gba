@@ -8,11 +8,12 @@ DH_START_NAMESPACE
 impl1::impl1() {
 }
 
-void impl1::setup_palette(camera& cam, int progress) {
-	auto p = progress % 6;
-	if(p == 2) {
+void impl1::setup_palette(camera& cam, const mj::game_data& data) {
+	// Prefer main palette; lesser chance to get secret alternative palettes.
+	auto p = data.random.get_int(10);
+	if(p == 1) {
 		cam.set_palette_type(1);
-	} else if(p == 4) {
+	} else if(p == 2) {
 		cam.set_palette_type(2);
 	}
 }

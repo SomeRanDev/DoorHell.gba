@@ -17,7 +17,7 @@ class impl1 {
 public:
 	impl1();
 
-	void setup_palette(camera& cam, int progress);
+	void setup_palette(camera& cam, const mj::game_data& data);
 
 	void on_first_update(camera& cam, mj::difficulty_level level, const mj::game_data& data);
 	int generate_unique_random_position(mj::difficulty_level level, const mj::game_data& data) const;
