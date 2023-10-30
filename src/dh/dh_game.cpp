@@ -11,6 +11,13 @@ DH_START_NAMESPACE
 // * base_game
 // ========================================================================
 
+base_game::base_game(const char* name, int _completed_games, const mj::game_data& data, bool is_part_2):
+	mj::game(name),
+	cam(is_part_2),
+	level(recommended_difficulty_level(completed_games, data)),
+	completed_games(_completed_games)
+{}
+
 void base_game::generate_tutorial_text(const char* msg, const mj::game_data& data) {
 	// Show tutorial text
 	auto x = 260;
@@ -138,7 +145,7 @@ void base_game::update_text() {
 // ========================================================================
 
 game1::game1(int _completed_games, const mj::game_data& data):
-	base_game(_completed_games, data, false)
+	base_game("dh", _completed_games, data, false)
 {
 	total_frames_value = play_bgm(data);
 	generate_tutorial_text("Ring the doorbell.", data);
@@ -181,7 +188,7 @@ void game1::on_pause_end([[maybe_unused]] const mj::game_data& data) {
 // ========================================================================
 
 game2::game2(int _completed_games, const mj::game_data& data):
-	base_game(_completed_games, data, true)
+	base_game("dh2", _completed_games, data, true)
 {
 	total_frames_value = play_bgm(data);
 	part_2.init(cam, data);

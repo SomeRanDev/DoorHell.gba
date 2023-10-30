@@ -28,11 +28,7 @@ enum State {
  */
 class base_game : public mj::game {
 public:
-	base_game(int _completed_games, const mj::game_data& data, bool is_part_2):
-		cam(is_part_2),
-		level(recommended_difficulty_level(completed_games, data)),
-		completed_games(_completed_games)
-	{}
+	base_game(const char* name, int _completed_games, const mj::game_data& data, bool is_part_2);
 
 	[[nodiscard]]
 	int total_frames() const final {
