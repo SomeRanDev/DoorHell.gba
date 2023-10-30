@@ -3,7 +3,7 @@
 #include "bn_sprite_ptr.h"
 #include "bn_fixed.h"
 
-#include "dh/dh_defines.h"
+#include "dh_defines.h"
 
 DH_START_NAMESPACE
 

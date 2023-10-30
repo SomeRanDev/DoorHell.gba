@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dh/dh_defines.h"
+#include "dh_defines.h"
 
 #include "bn_optional.h"
 #include "bn_sprite_ptr.h"

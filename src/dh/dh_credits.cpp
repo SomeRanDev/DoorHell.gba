@@ -7,7 +7,7 @@ namespace {
 
     constexpr bn::string_view code_credits[] = { me };
     constexpr bn::string_view graphics_credits[] = { me };
-	constexpr bn::string_view sfx_credits[] = { me, "Amada44" };
+	constexpr bn::string_view sfx_credits[] = { me, "Amada44", "rubberduck", "GboxMikeFozzy" };
 }
 
 // Add it twice since it contains two micro games (if this is not allowed, feel free to delete!)

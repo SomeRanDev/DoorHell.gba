@@ -1,4 +1,4 @@
-#include "dh/dh_hand.h"
+#include "dh_hand.h"
 
 #include "bn_keypad.h"
 #include "bn_math.h"

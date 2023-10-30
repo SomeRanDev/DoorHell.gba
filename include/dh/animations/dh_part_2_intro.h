@@ -90,9 +90,9 @@
 #include "bn_regular_bg_items_dh_part_2_intro_back_36.h"
 #include "bn_regular_bg_items_dh_part_2_intro_back_37.h"
 #include "bn_regular_bg_items_dh_part_2_intro_back_38.h"
-#include "bn_regular_bg_items_dh_part_2_intro_back_39.h"
-#include "bn_regular_bg_items_dh_part_2_intro_back_40.h"
-#include "bn_regular_bg_items_dh_part_2_intro_back_41.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_back_39.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_back_40.h"
+// #include "bn_regular_bg_items_dh_part_2_intro_back_41.h"
 
 #include "bn_regular_bg_items_dh_part_2_intro_phone_15.h"
 #include "bn_regular_bg_items_dh_part_2_intro_phone_16.h"

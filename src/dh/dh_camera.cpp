@@ -12,8 +12,6 @@
 #include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_background_palette.h"
 #include "bn_bg_palette_items_dh_pumpkin_bell_press_alt_foreground_palette.h"
 
-#include "bn_regular_bg_items_dh_candy_background.h"
-
 #include "frames/dh_intro.h"
 #include "frames/dh_high_bell.h"
 #include "frames/dh_window_bell.h"
