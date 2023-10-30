@@ -13,7 +13,7 @@
 #include "mj/mj_game_result_animation.h"
 #include "mj/mj_scene_type.h"
 
-// #include "bn_music_items.h"
+#include "bn_music_items.h"
 #include "bn_regular_bg_items_mj_big_pumpkin_1.h"
 #include "bn_regular_bg_items_mj_big_pumpkin_2.h"
 #include "bn_regular_bg_items_mj_big_pumpkin_3.h"
@@ -36,18 +36,27 @@ namespace
     constexpr int fade_out_frames = 64;
     constexpr int volume_dec_frames = 24;
 
-    constexpr int victory_music_position = 9;
-    constexpr int defeat_music_position = 4;
-    constexpr int next_game_music_position = 2;
-    constexpr int speed_up_music_position = 12;
+    constexpr int first_victory_music_position = 12;
+    constexpr int second_victory_music_position = 14;
+    constexpr bn::fixed victory_music_volume = 0.55;
 
-    constexpr int game_over_music_position = 13;
+    constexpr int defeat_music_position = 10;
+    constexpr bn::fixed defeat_music_volume = 0.6;
 
-    void _play_music([[maybe_unused]] int position, [[maybe_unused]] bn::fixed tempo)
+    constexpr int next_game_music_position = 8;
+    constexpr bn::fixed next_game_music_volume = 0.6;
+
+    constexpr int speed_up_music_position = 16;
+    constexpr bn::fixed speed_up_music_volume = 0.55;
+
+    constexpr int game_over_music_position = 18;
+    constexpr bn::fixed game_over_music_volume = 0.6;
+
+    void _play_music(int position, bn::fixed volume, bn::fixed tempo)
     {
-        // bn::music_items::mj_santtest.play(0.5);
-        // bn::music::set_position(position);
-        // bn::music::set_tempo(tempo);
+        bn::music_items::mj_gbahalloween.play(volume);
+        bn::music::set_position(position);
+        bn::music::set_tempo(tempo);
     }
 }
 
@@ -88,6 +97,7 @@ bn::optional<scene_type> game_scene::update()
     else if(_next_scene)
     {
         --_fade_out_frames;
+        _update_volume_dec();
 
         if(_fade_out_frames > 0)
         {
@@ -112,6 +122,11 @@ bn::optional<scene_type> game_scene::update()
         if(_next_scene)
         {
             _fade_out_frames = fade_out_frames;
+
+            if(bn::music::playing())
+            {
+                _music_volume_dec = bn::music::volume() / fade_out_frames;
+            }
         }
     }
     else
@@ -162,7 +177,7 @@ bn::optional<scene_type> game_scene::update()
                 {
                     _game_over_scene.reset(new game_over_scene(_completed_games, _core));
 
-                    _play_music(game_over_music_position, 1);
+                    _play_music(game_over_music_position, game_over_music_volume, 1);
                 }
             }
 
@@ -189,7 +204,7 @@ void game_scene::_create_next_game_transition()
 {
     _next_game_transition.emplace(_completed_games);
 
-    _play_music(next_game_music_position, _music_tempo);
+    _play_music(next_game_music_position, next_game_music_volume, _music_tempo);
 }
 
 void game_scene::_update_play()
@@ -261,7 +276,7 @@ bool game_scene::_update_fade(bool update_again)
                     _lives.look_down();
                     big_pumpkin_visible = false;
 
-                    _play_music(speed_up_music_position, 1.075);
+                    _play_music(speed_up_music_position, speed_up_music_volume, 1.075);
                 }
                 else
                 {
@@ -351,11 +366,13 @@ bool game_scene::_update_fade(bool update_again)
 
                     if(_victory)
                     {
-                        _play_music(victory_music_position + (_completed_games % 2), _music_tempo);
+                        _play_music(
+                            _completed_games % 2 ? second_victory_music_position : first_victory_music_position,
+                            victory_music_volume, _music_tempo);
                     }
                     else
                     {
-                        _play_music(defeat_music_position, _music_tempo);
+                        _play_music(defeat_music_position, defeat_music_volume, _music_tempo);
                     }
                 }
                 else
@@ -397,7 +414,7 @@ bool game_scene::_update_fade(bool update_again)
 
             if(_big_pumpkin_inc)
             {
-                game_manager& game_manager = _game_manager.emplace(_completed_games, _data, _core);
+                game_manager& game_manager = _game_manager.emplace(_completed_games, _data, _core, _game_history);
                 int total_frames = game_manager.game().total_frames();
                 BN_ASSERT(total_frames >= game::minimum_frames && total_frames <= game::maximum_frames,
                           "Invalid game total frames: ", total_frames);
